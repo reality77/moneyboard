@@ -4,17 +4,12 @@ using System.Text;
 
 namespace dal.models
 {
-    public class Account
+    public partial class Account
     {
         public int ID { get; set; }
-        public string AccountName { get; set; }
+        public string Name { get; set; }
         public decimal InitialBalance { get; set; }
         public decimal Balance { get; set; }
-        public ECurrency Currency { get; set; }
-    }
-
-    public enum ECurrency
-    {
-        EUR = 0,
+        public dto.ECurrency Currency { get; set; }
     }
 }

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using dal.models;
 using dal;
+using dal.models;
 
 namespace api.Controllers
 {
@@ -22,40 +22,46 @@ namespace api.Controllers
 
         // GET: api/Accounts
         [HttpGet]
-        public IEnumerable<Account> Get()
+        public IEnumerable<dto.Account> Get()
         {
-            return _db.Accounts;
+            return _db.Accounts.ConvertToDtoList<dto.Account>(_db);
         }
 
         // GET: api/Accounts/5
         [HttpGet("{id}", Name = "Get")]
-        public Account Get(int id)
+        public dto.Account Get(int id)
         {
-            return _db.Accounts.SingleOrDefault(a => a.ID == id);
+            return _db.Accounts.SingleOrDefault(a => a.ID == id)
+                .CreateDto<dto.Account>(_db);
         }
 
         // POST: api/Accounts
         [HttpGet("debugadd")]
-        public Account DebugAdd(string name)
+        public dto.Account DebugAdd(string name)
         {
-            Account acc = new Account
+            var dbaccount = new Account
             {
-                AccountName = name,
-                Currency = ECurrency.EUR,
+                Name = name,
+                Currency = dto.ECurrency.EUR,
                 InitialBalance = 0,
                 Balance = 0,
             };
 
-            _db.Accounts.Add(acc);
+            _db.Accounts.Add(dbaccount);
             _db.SaveChanges();
 
-            return acc;
+            return dbaccount.CreateDto<dto.Account>(_db);
         }
 
         // POST: api/Accounts
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] dto.Account account)
         {
+            var dbaccount = new Account();
+            dbaccount.UpdateFrom(account, _db);
+
+            _db.Accounts.Add(dbaccount);
+            _db.SaveChanges();
         }
         
         // PUT: api/Accounts/5
