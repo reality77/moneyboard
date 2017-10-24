@@ -28,7 +28,7 @@ namespace api.Controllers
         }
 
         // GET: api/Accounts/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "AccountsGet")]
         public dto.Account Get(int id)
         {
             return _db.GetAccount(id)
