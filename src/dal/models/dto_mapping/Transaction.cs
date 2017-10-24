@@ -26,18 +26,13 @@ namespace dal.models
         {
             var dtoObject = (dto.Transaction)dto;
             this.ID = dtoObject.ID;
-            this.Account = db.GetAccount(dtoObject.Account.ID);
-            this.Amount = new dto.CurrencyNumber { Currency = dtoObject.Account.Currency, Value = this.Amount };
+            this.AccountID = dtoObject.Account.ID;
 
-            if(dtoObject.Category != null)
-                this.Category = db.GetCategory(dtoObject.Category.ID);
-            else
-                this.Category = null;
+            this.Amount = dtoObject.Amount.Value;
 
-            if(dtoObject.Payee != null)
-                this.Payee = db.GetPayee(dtoObject.Payee.ID);
-            else
-                this.Payee = null;
+            this.CategoryID = dtoObject.Category?.ID;
+
+            this.PayeeID = dtoObject.Payee?.ID;
 
             this.Type = this.Type;
             this.UserDate = this.UserDate;
