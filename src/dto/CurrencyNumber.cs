@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace dto
 {
     public struct CurrencyNumber
     {
+        [JsonConverter(typeof(StringEnumConverter))]
         public ECurrency Currency { get; set; }
         public decimal Value { get; set; }
 
