@@ -31,7 +31,7 @@ namespace api.Controllers
         [HttpGet("{id}", Name = "Get")]
         public dto.Account Get(int id)
         {
-            return _db.Accounts.SingleOrDefault(a => a.ID == id)
+            return _db.GetAccount(id)
                 .CreateDto<dto.Account>(_db);
         }
 

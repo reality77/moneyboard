@@ -33,5 +33,10 @@ namespace dal
         {
             return this.Payees.SingleOrDefault(a => a.ID == id);
         }
+
+        public Transaction GetTransaction(int id)
+        {
+            return this.Transactions.SingleOrDefault(a => a.ID == id);
+        }
     }
 }
