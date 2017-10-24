@@ -1,29 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace dal.models
+namespace dto
 {
-    public partial class Transaction
+    public class Transaction : IDtoObject
     {
-        [Key]
         public int ID { get; set; }
-
-        [Required]
         public Account Account { get; set; }
-
-        [Required]
-        public decimal Amount { get; set; }
-
-        [Required]
-        public dto.ETransactionType Type { get; set; }
-
-        [Required]
+        public CurrencyNumber Amount { get; set; }
+        public ETransactionType Type { get; set; }
         public DateTime UserDate { get; set; }
 
         public Category Category { get; set; }
-
         public Payee Payee { get; set; }
+    }
+
+    public enum ETransactionType : int
+    {
+        Normal = 0,
+        Transfer = 1,
     }
 }

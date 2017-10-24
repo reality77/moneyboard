@@ -9,23 +9,24 @@ namespace dal.models
     {
         public override IDtoObject LoadTo(IDtoObject dto, MoneyboardContext db)
         {
-            var dtoAccount = (dto.Account)dto;
-            dtoAccount.ID = this.ID;
-            dtoAccount.Name = this.Name;
-            dtoAccount.InitialBalance = new CurrencyNumber { Value = this.InitialBalance, Currency = this.Currency };
-            dtoAccount.Balance = new CurrencyNumber { Value = this.Balance, Currency = this.Currency };
+            var dtoObject = (dto.Account)dto;
+            dtoObject.ID = this.ID;
+            dtoObject.Name = this.Name;
+            dtoObject.Currency = this.Currency;
+            dtoObject.InitialBalance = new CurrencyNumber { Value = this.InitialBalance, Currency = this.Currency };
+            dtoObject.Balance = new CurrencyNumber { Value = this.Balance, Currency = this.Currency };
 
-            return dtoAccount;
+            return dtoObject;
         }
 
         public override void UpdateFrom(IDtoObject dto, MoneyboardContext db)
         {
-            var dtoAccount = (dto.Account)dto;
-            this.ID = dtoAccount.ID;
-            this.Name = dtoAccount.Name;
-            this.InitialBalance = dtoAccount.InitialBalance.Value;
-            this.Balance = dtoAccount.Balance.Value;
-            this.Currency = dtoAccount.InitialBalance.Currency;
+            var dtoObject = (dto.Account)dto;
+            this.ID = dtoObject.ID;
+            this.Name = dtoObject.Name;
+            this.InitialBalance = dtoObject.InitialBalance.Value;
+            this.Balance = dtoObject.Balance.Value;
+            this.Currency = dtoObject.Currency;
         }
     }
 }

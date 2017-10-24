@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace dal.models
+namespace dto
 {
-    public partial class Payee
+    public class Category : IDtoObject
     {
-        [Key]
         public int ID { get; set; }
-
-        [Required]
         public string Name { get; set; }
     }
 }
