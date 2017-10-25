@@ -23,7 +23,7 @@ namespace api.Controllers
 
         // GET: transactions_view/account/{accountId}
         [HttpGet("account/{accountId}")]
-        public TransactionsView GetFromAccountId(int accountId, int pageId = 0, int itemsPerPage = 20)
+        public TransactionsView GetFromAccountId(int accountId, int pageId = 0, int itemsPerPage = 10)
         {
             return business.AccountTransactionsViewsCreator.GenerateAccountView(accountId, pageId, itemsPerPage, _db);
         }

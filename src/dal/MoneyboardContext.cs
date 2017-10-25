@@ -46,20 +46,18 @@ namespace dal
                 this.SaveChanges();
 
                 this.Transactions.AddRange(
-                    new Transaction
-                    {
-                        Account = defaultAccount,
-                        Amount = 1500,
-                        Caption = "Salary",
-                        UserDate = DateTime.Now.AddDays(-5)
-                    },
-                    new Transaction
-                    {
-                        Account = defaultAccount,
-                        Amount = -150,
-                        Caption = "Shopping",
-                        UserDate = DateTime.Now.AddDays(-1)
-                    }
+                    new Transaction { Account = defaultAccount, Amount = 1650, Caption = "Salary", UserDate = DateTime.Parse("2017-01-02") },
+                    new Transaction { Account = defaultAccount, Amount = -150, Caption = "Shopping",UserDate = DateTime.Parse("2017-01-03") },
+                    new Transaction { Account = defaultAccount, Amount = -10, Caption = "T1",UserDate = DateTime.Parse("2017-01-04") },
+                    new Transaction { Account = defaultAccount, Amount = -10, Caption = "T2",UserDate = DateTime.Parse("2017-01-04") },
+                    new Transaction { Account = defaultAccount, Amount = -10, Caption = "T3",UserDate = DateTime.Parse("2017-01-04") },
+                    new Transaction { Account = defaultAccount, Amount = -10, Caption = "T4",UserDate = DateTime.Parse("2017-01-04") },
+                    new Transaction { Account = defaultAccount, Amount = -10, Caption = "T5",UserDate = DateTime.Parse("2017-01-04") },
+                    new Transaction { Account = defaultAccount, Amount = -10, Caption = "T6",UserDate = DateTime.Parse("2017-01-04") },
+                    new Transaction { Account = defaultAccount, Amount = -10, Caption = "T7",UserDate = DateTime.Parse("2017-01-04") },
+                    new Transaction { Account = defaultAccount, Amount = -10, Caption = "T8",UserDate = DateTime.Parse("2017-01-04") },
+                    new Transaction { Account = defaultAccount, Amount = -10, Caption = "T9",UserDate = DateTime.Parse("2017-01-04") },
+                    new Transaction { Account = defaultAccount, Amount = -10, Caption = "T10",UserDate = DateTime.Parse("2017-01-04") }
                 );
 
                 this.SaveChanges();
