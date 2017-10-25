@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using dal;
-using dal.models;
 using dto.transactions_view;
 
 namespace api.Controllers
@@ -25,7 +18,8 @@ namespace api.Controllers
         [HttpGet("account/{accountId}")]
         public TransactionsView GetFromAccountId(int accountId, int pageId = 0, int itemsPerPage = 10)
         {
-            return business.AccountTransactionsViewsCreator.GenerateAccountView(accountId, pageId, itemsPerPage, _db);
+            var result = business.AccountTransactionsViewsCreator.GenerateAccountView(accountId, pageId, itemsPerPage, _db);
+            return result; 
         }
     }
 }

@@ -20,7 +20,7 @@ namespace business
                 .Where(t => t.AccountId == accountId)
                 .Skip(pageId * itemsPerPage)
                 .Take(itemsPerPage)
-                .OrderByDescending(t => t.UserDate)
+                .OrderBy(t => t.UserDate)
                 .ThenBy(t => t.ID)
                 .ConvertToAccountTransactionRow(db);
 
