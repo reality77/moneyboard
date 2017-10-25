@@ -8,6 +8,7 @@ namespace dto
     {
         public int ID { get; set; }
         public Account Account { get; set; }
+        public string Caption { get; set; }
         public CurrencyNumber Amount { get; set; }
         public ETransactionType Type { get; set; }
         public DateTime UserDate { get; set; }

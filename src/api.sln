@@ -5,9 +5,13 @@ VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "api", "api\api.csproj", "{F56E6785-C423-4435-B457-1F7D8C683410}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dal", "dal\dal.csproj", "{A6EF2633-A84F-4BD1-A343-971BFD373D36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dal", "dal\dal.csproj", "{A6EF2633-A84F-4BD1-A343-971BFD373D36}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dto", "dto\dto.csproj", "{28D3A50D-BAE3-47E8-B520-50817C754BCF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dal_postgres", "dal_postgres\dal_postgres.csproj", "{330CA95C-7DF6-4EF2-8CA7-D7E58B6F6FF6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "business", "business\business.csproj", "{4D0CFCDC-9B48-499A-BEF2-60C045E754C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{28D3A50D-BAE3-47E8-B520-50817C754BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28D3A50D-BAE3-47E8-B520-50817C754BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28D3A50D-BAE3-47E8-B520-50817C754BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{330CA95C-7DF6-4EF2-8CA7-D7E58B6F6FF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{330CA95C-7DF6-4EF2-8CA7-D7E58B6F6FF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{330CA95C-7DF6-4EF2-8CA7-D7E58B6F6FF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{330CA95C-7DF6-4EF2-8CA7-D7E58B6F6FF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D0CFCDC-9B48-499A-BEF2-60C045E754C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D0CFCDC-9B48-499A-BEF2-60C045E754C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D0CFCDC-9B48-499A-BEF2-60C045E754C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D0CFCDC-9B48-499A-BEF2-60C045E754C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
