@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using dal;
 using dal.models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -13,9 +14,9 @@ namespace api.Controllers
     [Route("Transactions")]
     public class TransactionsController : MoneyboardController
     {
-        protected readonly MoneyboardContext _db;
+        protected readonly dal_postgres.MoneyboardPostgresContext _db;
 
-        public TransactionsController(MoneyboardContext db)
+        public TransactionsController(dal_postgres.MoneyboardPostgresContext db)
         {
             _db = db;
         }
@@ -25,6 +26,9 @@ namespace api.Controllers
         public IEnumerable<dto.Transaction> GetFromAccountId(int accountId)
         {
             return _db.Transactions
+                .Include(trx => trx.Account)
+                .Include(trx => trx.Category)
+                .Include(trx => trx.Payee)
                 .Where(t => t.Account.ID == accountId)
                 .ConvertToDtoList<dto.Transaction>(_db);
         }

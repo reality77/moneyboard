@@ -14,9 +14,9 @@ namespace api.Controllers
     [Route("TransactionsView")]
     public class TransactionsViewController : MoneyboardController
     {
-        protected readonly MoneyboardContext _db;
+        protected readonly dal_postgres.MoneyboardPostgresContext _db;
 
-        public TransactionsViewController(MoneyboardContext db)
+        public TransactionsViewController(dal_postgres.MoneyboardPostgresContext db)
         {
             _db = db;
         }

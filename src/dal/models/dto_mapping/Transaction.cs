@@ -14,8 +14,14 @@ namespace dal.models
             dtoObject.ID = this.ID;
             dtoObject.Account = this.Account.CreateDto<dto.Account>(db);
             dtoObject.Amount = new dto.CurrencyNumber { Currency = dtoObject.Account.Currency, Value = this.Amount };
-            dtoObject.Category = this.Category.CreateDto<dto.Category>(db);
-            dtoObject.Payee = this.Payee.CreateDto<dto.Payee>(db);
+            dtoObject.Caption = this.Caption;
+            
+            if(this.Category != null)
+                dtoObject.Category = this.Category.CreateDto<dto.Category>(db);
+            
+            if(this.Payee != null)
+                dtoObject.Payee = this.Payee.CreateDto<dto.Payee>(db);
+                
             dtoObject.Type = this.Type;
             dtoObject.UserDate = this.UserDate;
 
@@ -28,6 +34,7 @@ namespace dal.models
             this.ID = dtoObject.ID;
             this.AccountID = dtoObject.Account.ID;
 
+            this.Caption = dtoObject.Caption;
             this.Amount = dtoObject.Amount.Value;
 
             this.CategoryID = dtoObject.Category?.ID;

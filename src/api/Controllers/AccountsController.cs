@@ -13,9 +13,9 @@ namespace api.Controllers
     [Route("Accounts")]
     public class AccountsController : MoneyboardController
     {
-        protected readonly MoneyboardContext _db;
+        protected readonly dal_postgres.MoneyboardPostgresContext _db;
 
-        public AccountsController(MoneyboardContext db)
+        public AccountsController(dal_postgres.MoneyboardPostgresContext db)
         {
             _db = db;
         }

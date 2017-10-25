@@ -26,7 +26,8 @@ namespace api
         {
             services.AddMvc();
 
-            services.AddDbContext<dal.MoneyboardContext>(options => options.UseInMemoryDatabase("Moneyboard"));
+            //services.AddDbContext<dal.MoneyboardContext>(options => options.UseInMemoryDatabase("Moneyboard"));
+            services.AddDbContext<dal_postgres.MoneyboardPostgresContext>(options => options.UseNpgsql(string.Format(dal_postgres.MoneyboardPostgresContextContextFactory.CONNECTION_STRING, "localhost")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +39,10 @@ namespace api
             }
 
             app.UseMvc();
+
+            // Astuce pour appeler une méthode de SeedData
+            var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            serviceScopeFactory.SeedData();
         }
     }
 }

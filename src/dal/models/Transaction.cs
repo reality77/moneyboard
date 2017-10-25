@@ -16,6 +16,8 @@ namespace dal.models
         [Required]
         public decimal Amount { get; set; }
 
+        public string Caption { get; set; }
+
         [Required]
         public dto.ETransactionType Type { get; set; }
 
