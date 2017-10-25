@@ -7,7 +7,5 @@ namespace dto.transactions_view
     public class TransactionsView
     {
         public IEnumerable<TransactionRow> Transactions { get; set; }
-
-        public CurrencyNumber InitialBalance { get; set; }
     }
 }

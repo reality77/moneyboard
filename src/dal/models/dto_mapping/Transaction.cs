@@ -32,14 +32,14 @@ namespace dal.models
         {
             var dtoObject = (dto.Transaction)dto;
             this.ID = dtoObject.ID;
-            this.AccountID = dtoObject.Account.ID;
+            this.AccountId = dtoObject.Account.ID;
 
             this.Caption = dtoObject.Caption;
             this.Amount = dtoObject.Amount.Value;
 
-            this.CategoryID = dtoObject.Category?.ID;
+            this.CategoryId = dtoObject.Category?.ID;
 
-            this.PayeeID = dtoObject.Payee?.ID;
+            this.PayeeId = dtoObject.Payee?.ID;
 
             this.Type = this.Type;
             this.UserDate = this.UserDate;

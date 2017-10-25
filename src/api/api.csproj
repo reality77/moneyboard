@@ -22,6 +22,7 @@
     <ProjectReference Include="..\dal_postgres\dal_postgres.csproj" />
     <ProjectReference Include="..\dal\dal.csproj" />
     <ProjectReference Include="..\dto\dto.csproj" />
+    <ProjectReference Include="..\business\business.csproj" />
   </ItemGroup>
 
 </Project>

@@ -20,7 +20,7 @@ Lancer un container : cela va créé un user `webapi` et une base de données du
 
 `docker run -d -e POSTGRES_USER=webapi -e POSTGRES_PASSWORD=mypostgrespassword! --name appdb -p 5432:5432 postgres`
 
-Et lancer la commande pour créer la base de données moneyboard
+Et lancer le site en debug
 
-`dotnet ef database update --startup-project ../dal_init/`
+
 

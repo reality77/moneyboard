@@ -11,7 +11,7 @@ using dto.transactions_view;
 namespace api.Controllers
 {
     [Produces("application/json")]
-    [Route("TransactionsView")]
+    [Route("transactions_view")]
     public class TransactionsViewController : MoneyboardController
     {
         protected readonly dal_postgres.MoneyboardPostgresContext _db;
@@ -21,12 +21,11 @@ namespace api.Controllers
             _db = db;
         }
 
-        // GET: api/TransactionsView/Account/{accountId}
-        [HttpGet("Account")]
-        public TransactionsView GetFromAccountId(int accountId)
+        // GET: transactions_view/account/{accountId}
+        [HttpGet("account/{accountId}")]
+        public TransactionsView GetFromAccountId(int accountId, int pageId = 0, int itemsPerPage = 20)
         {
-            //TODO
-            return null;
+            return business.AccountTransactionsViewsCreator.GenerateAccountView(accountId, pageId, itemsPerPage, _db);
         }
     }
 }

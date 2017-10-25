@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dal\dal" />
+    <ProjectReference Include="..\dal\dal.csproj" />
     <ProjectReference Include="..\dal_postgres\dal_postgres.csproj" />
   </ItemGroup>
 
