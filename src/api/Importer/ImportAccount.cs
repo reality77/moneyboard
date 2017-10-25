@@ -36,7 +36,7 @@ namespace api.Importer
         [IgnoreDataMember]
         public decimal ImportInitialBalance { get; set; }
 
-        [IgnoreDataMember]
+        [DataMember]
         public List<ImportTransaction> Transactions { get; set; }
 
         public ImportAccount()

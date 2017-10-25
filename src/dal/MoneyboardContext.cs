@@ -18,6 +18,8 @@ namespace dal
         public DbSet<Category> Categories { get; set; }
         public DbSet<Payee> Payees { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<ImportRegex> ImportRegexes { get; set; }
+        public DbSet<ImportPayeeSelection> ImportPayeeSelections { get; set; }
 
         public void SeedData()
         {
@@ -62,6 +64,30 @@ namespace dal
 
                 this.SaveChanges();
             }
+
+            // --- Création des regex d'import
+            if (this.ImportRegexes.Count() < 3)
+            {
+                AddImportRegex("^VIR (?'mode'(.*?)) (?'payee'(.*))$");
+                AddImportRegex("^PAIEMENT (?'mode'(.*?)) (?'user_date_ddMMyyyy'(.*?)) (?'comment'(.*?)) (?'payee'(.*))$");
+                AddImportRegex("^RETRAIT (?'mode'(.*?)) (?'user_date_ddMMyyyy'(.*?)) (?'comment'(.*))$");
+                AddImportRegex("^PRLV (?'mode'(.*?)) (?'payee'(.*))$");
+
+                this.SaveChanges();
+            }
+        }
+
+        private ImportRegex AddImportRegex(string regex)
+        {
+            var ir = new ImportRegex { Regex = regex };
+            this.ImportRegexes.Add(ir);
+
+            return ir;
+        }
+
+        private void AddImportPayeeSelection(ImportRegex regex, string importedCaption, int payeeId, int categoryId)
+        {
+            this.ImportPayeeSelections.Add(new ImportPayeeSelection { ImportRegexID = regex.ID, ImportedCaption = importedCaption, PayeeId = payeeId, CategoryId = categoryId });
         }
 
         public Account GetAccount(int id)
