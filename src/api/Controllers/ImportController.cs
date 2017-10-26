@@ -15,6 +15,13 @@ namespace api.Controllers
     [Route("Import")]
     public class ImportController : MoneyboardController
     {
+        protected readonly dal_postgres.MoneyboardPostgresContext _db;
+
+        public ImportController(dal_postgres.MoneyboardPostgresContext db)
+        {
+            _db = db;
+        }
+
         [HttpPost("prepare")]
         public IActionResult PrepareImport()
         {
@@ -45,6 +52,12 @@ namespace api.Controllers
                 try
                 {
                     importedAccount = importer.Import(stream);
+
+
+                    var detector = new TransactionDetection();
+                    foreach(var transaction in importedAccount.Transactions)
+                        detector.DetectTransaction(transaction, _db);
+
                     listImportedAccount.Add(importedAccount);
                 }
                 catch (Exception ex)

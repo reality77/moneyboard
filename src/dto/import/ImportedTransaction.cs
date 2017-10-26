@@ -22,8 +22,22 @@ namespace dto.import
 
         public string Number { get; set; }
 
+        public DateTime? DetectedUserDate { get; set; }
 
-        public string TransactionHash { get; set; }
+        public string DetectedMode { get; set; }
+
+        public string DetectedComment { get; set; }
+
+        public string DetectedCaption { get; set; }
+
+        public int? DetectedPayeeId { get; set; }
+
+        public int? DetectedCategoryId { get; set; }
+
+        // ------
+        public bool DetectionSucceded { get; set; }
+
+        public string ImportTransactionHash { get; set; }
 
         public string Error { get; set; }
 
@@ -31,7 +45,7 @@ namespace dto.import
         {
             string transactionString = $"td:{this.TransactionDate}/cp:{this.CaptionOrPayee}/tt:{this.TransferTarget}/a:{this.Amount}/m:{this.Memo}/n:{this.Number}";
             var hash = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(transactionString));
-			this.TransactionHash = Convert.ToBase64String(hash);
+			this.ImportTransactionHash = Convert.ToBase64String(hash);
         }
     }
 }
