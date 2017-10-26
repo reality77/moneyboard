@@ -7,10 +7,10 @@ using System.Runtime.Serialization;
 namespace api.Importer
 {
     [DataContract]
-    public class ImportTransaction
+    public class OLD_ImportTransaction
     {
         [IgnoreDataMember]
-        public ImportAccount OwnerAccount { get; set; }
+        public OLD_ImportAccount OwnerAccount { get; set; }
 
         [DataMember]
         public string CheckNumber { get; set; }
@@ -43,11 +43,11 @@ namespace api.Importer
         public string ImportTargetTransferAccount { get; set; }
 
         [DataMember]
-        public List<ImportTransactionDetail> Details { get; set; }
+        public List<OLD_ImportTransactionDetail> Details { get; set; }
 
-        public ImportTransaction()
+        public OLD_ImportTransaction()
         {
-            this.Details = new List<ImportTransactionDetail>();
+            this.Details = new List<OLD_ImportTransactionDetail>();
         }
 
         /// <summary>
@@ -80,10 +80,10 @@ namespace api.Importer
     }
 
     [DataContract]
-    public class ImportTransactionDetail
+    public class OLD_ImportTransactionDetail
     {
         [IgnoreDataMember]
-        public ImportTransaction OwnerTransaction { get; set; }
+        public OLD_ImportTransaction OwnerTransaction { get; set; }
 
         [DataMember]
         public decimal Amount { get; set; }

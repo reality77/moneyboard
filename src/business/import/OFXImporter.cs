@@ -4,23 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Globalization;
 using System.Diagnostics;
+using dto.import;
 
-namespace api.Importer
+namespace business.import
 {
-    public abstract class ImporterBase
-    {
-        public abstract ImportAccount Import(string filecontent);
-    }
-
-
-    public enum ImportFileTypes
-    {
-        Unknown,
-        QIF,
-        OFX,
-    }
-
-
     public class OFXImporter : ImporterBase
 	{
         private enum OFXTransactionType
@@ -51,17 +38,15 @@ namespace api.Importer
 		{
 		}
 
-        public override ImportAccount Import(string filecontent)
+        public override ImportedAccount Import(string filecontent)
 		{
+            throw new NotImplementedException("OFX is not supported currently");
+            /* 
             string[] contents = filecontent.Split('\n');
 
             ImportTransaction operation = null;
             //ImportTransactionDetail operationdetail = null;
             ImportAccount account = new ImportAccount();
-
-			/*decimal? accountInitialBalance = null;
-            string accountname = null;
-			string checknumber = null;*/
 
             string encoding = "";
             string charset = "";
@@ -90,17 +75,17 @@ namespace api.Importer
                 if (line.Length == 0)
                     continue;
 
-                /* TODO
-                OFXHEADER:100
-                DATA:OFXSGML
-                VERSION:102
-                SECURITY:NONE
-                ENCODING:USASCII
-                CHARSET:1252
-                COMPRESSION:NONE
-                OLDFILEUID:NONE
-                NEWFILEUID:NONE
-                 * */
+                // --- TODO
+                //OFXHEADER:100
+                //DATA:OFXSGML
+                //VERSION:102
+                //SECURITY:NONE
+                //ENCODING:USASCII
+                //CHARSET:1252
+                //COMPRESSION:NONE
+                //OLDFILEUID:NONE
+                //NEWFILEUID:NONE
+                // ---
 
                 if (line.StartsWith("ENCODING:"))
                 {
@@ -404,6 +389,7 @@ namespace api.Importer
             account.Currency = currency;
 
 			return account;
+            */
 		}
 	}
 }

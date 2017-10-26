@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Text;
-using api.Importer;
+using business.import;
+using dto.import;
+
 
 namespace api.Controllers
 {
@@ -16,7 +18,7 @@ namespace api.Controllers
         [HttpPost("")]
         public IActionResult Import(string fileName)
         {
-            var listImportedAccount = new List<ImportAccount>();
+            var listImportedAccount = new List<ImportedAccount>();
 
             var stream = Request.Body;
 
@@ -42,7 +44,7 @@ namespace api.Controllers
                     return BadRequest("[IMPORT] File extension not supported");
                 }
 
-                ImportAccount importedAccount = null;
+                ImportedAccount importedAccount = null;
 
                 try
                 {

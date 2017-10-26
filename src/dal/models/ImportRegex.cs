@@ -14,6 +14,8 @@ namespace dal.models
         public string Regex { get; set; }
 
         [Required]
-        public IEnumerable<ImportPayeeSelection> ImportPayeeSelections { get; set; }
+        public ICollection<ImportPayeeSelection> ImportPayeeSelections { get; set; }
+        
+        public dto.ETransactionType TransactionType { get; set; }
     }
 }

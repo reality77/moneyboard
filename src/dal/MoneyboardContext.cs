@@ -68,18 +68,18 @@ namespace dal
             // --- Création des regex d'import
             if (this.ImportRegexes.Count() < 3)
             {
-                AddImportRegex("^VIR (?'mode'(.*?)) (?'payee'(.*))$");
-                AddImportRegex("^PAIEMENT (?'mode'(.*?)) (?'user_date_ddMMyyyy'(.*?)) (?'comment'(.*?)) (?'payee'(.*))$");
-                AddImportRegex("^RETRAIT (?'mode'(.*?)) (?'user_date_ddMMyyyy'(.*?)) (?'comment'(.*))$");
-                AddImportRegex("^PRLV (?'mode'(.*?)) (?'payee'(.*))$");
+                AddImportRegex("^VIR (?'mode'(.*?)) (?'payee'(.*))$", dto.ETransactionType.Transfer);
+                AddImportRegex("^PAIEMENT (?'mode'(.*?)) (?'user_date_ddMMyyyy'(.*?)) (?'comment'(.*?)) (?'payee'(.*))$", dto.ETransactionType.Payment);
+                AddImportRegex("^RETRAIT (?'mode'(.*?)) (?'user_date_ddMMyyyy'(.*?)) (?'comment'(.*))$", dto.ETransactionType.Withdrawal);
+                AddImportRegex("^PRLV (?'mode'(.*?)) (?'payee'(.*))$", dto.ETransactionType.Debit);
 
                 this.SaveChanges();
             }
         }
 
-        private ImportRegex AddImportRegex(string regex)
+        private ImportRegex AddImportRegex(string regex, dto.ETransactionType transactionType = dto.ETransactionType.Unknown)
         {
-            var ir = new ImportRegex { Regex = regex };
+            var ir = new ImportRegex { Regex = regex, TransactionType = transactionType };
             this.ImportRegexes.Add(ir);
 
             return ir;

@@ -19,7 +19,18 @@ namespace dto
 
     public enum ETransactionType : int
     {
-        Normal = 0,
-        Transfer = 1,
+        Unknown = 0,
+        
+        // Paiment
+        Payment = 1,
+
+        //Virement bancaire
+        Transfer = 2,
+
+        // Retrait d'espèces
+        Withdrawal = 3,
+
+        // Prélèvement bancaire
+        Debit = 4
     }
 }

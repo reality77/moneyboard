@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace api.Importer
 {
     [DataContract]
-    public class ImportAccount
+    public class OLD_ImportAccount
     {
         [IgnoreDataMember]
         public string OriginalAccountName { get; set; }
@@ -37,11 +37,11 @@ namespace api.Importer
         public decimal ImportInitialBalance { get; set; }
 
         [DataMember]
-        public List<ImportTransaction> Transactions { get; set; }
+        public List<OLD_ImportTransaction> Transactions { get; set; }
 
-        public ImportAccount()
+        public OLD_ImportAccount()
         {
-            this.Transactions = new List<ImportTransaction>();
+            this.Transactions = new List<OLD_ImportTransaction>();
             this.Currency = "EUR";
         }
     }
