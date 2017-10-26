@@ -15,8 +15,8 @@ namespace api.Controllers
     [Route("Import")]
     public class ImportController : MoneyboardController
     {
-        [HttpPost("")]
-        public IActionResult Import()
+        [HttpPost("prepare")]
+        public IActionResult PrepareImport()
         {
             var listImportedAccount = new List<ImportedAccount>();
 
@@ -24,39 +24,32 @@ namespace api.Controllers
             {
                 var stream = file.OpenReadStream();
 
-                using (StreamReader reader
-                    = new StreamReader(stream, Encoding.UTF8, true, 1024, true))
+                // --- Import des données du fichier
+                ImporterBase importer = null;
+
+                if (file.FileName.ToLower().EndsWith(".ofx"))
                 {
-                    string fileContent = reader.ReadToEnd();
+                    importer = new OFXImporter();
+                }
+                else if (file.FileName.ToLower().EndsWith(".qif"))
+                {
+                    importer = new QIFImporter();
+                }
+                else
+                {
+                    return BadRequest("[IMPORT] File extension not supported");
+                }
 
-                    // --- Import des données du fichier
+                ImportedAccount importedAccount = null;
 
-                    ImporterBase importer = null;
-
-                    if (file.FileName.ToLower().EndsWith(".ofx"))
-                    {
-                        importer = new OFXImporter();
-                    }
-                    else if (file.FileName.ToLower().EndsWith(".qif"))
-                    {
-                        importer = new QIFImporter();
-                    }
-                    else
-                    {
-                        return BadRequest("[IMPORT] File extension not supported");
-                    }
-
-                    ImportedAccount importedAccount = null;
-
-                    try
-                    {
-                        importedAccount = importer.Import(fileContent);
-                        listImportedAccount.Add(importedAccount);
-                    }
-                    catch (Exception ex)
-                    {
-                        return BadRequest($"[IMPORT] {ex.Message}");
-                    }
+                try
+                {
+                    importedAccount = importer.Import(stream);
+                    listImportedAccount.Add(importedAccount);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest($"[IMPORT] {ex.Message}");
                 }
             }
 

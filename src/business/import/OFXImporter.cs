@@ -5,6 +5,7 @@ using System.Text;
 using System.Globalization;
 using System.Diagnostics;
 using dto.import;
+using System.IO;
 
 namespace business.import
 {
@@ -38,7 +39,7 @@ namespace business.import
 		{
 		}
 
-        public override ImportedAccount Import(string filecontent)
+        public override ImportedAccount Import(Stream stream)
 		{
             throw new NotImplementedException("OFX is not supported currently");
             /* 
