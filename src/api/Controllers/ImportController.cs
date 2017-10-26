@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using business.import;
 using dto.import;
-
+using api.filters;
 
 namespace api.Controllers
 {
@@ -23,11 +23,17 @@ namespace api.Controllers
         }
 
         [HttpPost("prepare")]
+        //[RequestFormSizeLimit(valueLengthLimit:200000)]
         public IActionResult PrepareImport()
         {
             var listImportedAccount = new List<ImportedAccount>();
 
-            foreach(var file in  Request.Form.Files)
+            /*using(var reader = new StreamReader(this.Request.Body))
+            {
+                string body = reader.ReadToEnd();
+            }*/
+
+            foreach (var file in  Request.Form.Files)
             {
                 var stream = file.OpenReadStream();
 
@@ -54,9 +60,9 @@ namespace api.Controllers
                     importedAccount = importer.Import(stream);
 
 
-                    var detector = new TransactionDetection();
+                    var detector = new TransactionDetection(_db);
                     foreach(var transaction in importedAccount.Transactions)
-                        detector.DetectTransaction(transaction, _db);
+                        detector.DetectTransaction(transaction);
 
                     listImportedAccount.Add(importedAccount);
                 }

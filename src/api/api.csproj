@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Importer\" />
+    <Compile Remove="Importer\**" />
+    <Content Remove="Importer\**" />
+    <EmbeddedResource Remove="Importer\**" />
+    <None Remove="Importer\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

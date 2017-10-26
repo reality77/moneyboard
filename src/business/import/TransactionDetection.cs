@@ -16,11 +16,16 @@ namespace business.import
     {
         const string USERDATE_TAG = "user_date_";
 
-        public void DetectTransaction(ImportedTransaction transaction, MoneyboardContext db)
+        IQueryable<dal.models.ImportRegex> _importRegexes;
+
+        public TransactionDetection(MoneyboardContext db)
         {
-            var importRegexes = db.ImportRegexes.Include(ir => ir.ImportPayeeSelections);
-            
-            foreach(var importRegEx in db.ImportRegexes)
+            _importRegexes = db.ImportRegexes.Include(ir => ir.ImportPayeeSelections);
+        }
+
+        public void DetectTransaction(ImportedTransaction transaction)
+        {
+            foreach(var importRegEx in _importRegexes)
             {
                 var match = importRegEx.Regex.Match(transaction.CaptionOrPayee);
 
@@ -53,13 +58,16 @@ namespace business.import
                                 break;
                             case "payee":
                             {
-                                var payeeSelection = importRegEx.ImportPayeeSelections.SingleOrDefault(p => p.ImportedCaption.ToLower() == transaction.CaptionOrPayee.ToLower());
-
-                                if(payeeSelection != null)
+                                if (importRegEx.ImportPayeeSelections != null && importRegEx.ImportPayeeSelections.Count() > 0)
                                 {
-                                    transaction.DetectedPayeeId = payeeSelection.PayeeId;
-                                    transaction.DetectedCategoryId = payeeSelection.CategoryId;
-                                    transaction.DetectedCaption = payeeSelection.TransactionCaption;
+                                    var payeeSelection = importRegEx.ImportPayeeSelections.SingleOrDefault(p => p.ImportedCaption.ToLower() == group.Value.ToLower());
+
+                                    if (payeeSelection != null)
+                                    {
+                                        transaction.DetectedPayeeId = payeeSelection.PayeeId;
+                                        transaction.DetectedCategoryId = payeeSelection.CategoryId;
+                                        transaction.DetectedCaption = payeeSelection.TransactionCaption;
+                                    }
                                 }
                                 break;
                             }
