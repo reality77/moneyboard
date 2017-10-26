@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\dal\dal.csproj" />
     <ProjectReference Include="..\dto\dto.csproj" />
   </ItemGroup>

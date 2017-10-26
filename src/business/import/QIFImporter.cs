@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using dto.import;
 
@@ -8,8 +9,11 @@ namespace business.import
 {
     public class QIFImporter : ImporterBase
 	{
+		SHA1 _sha1;
+
 		public QIFImporter()
 		{
+			_sha1 = SHA1.Create();
 		}
 
 		public override ImportedAccount Import(Stream stream)
@@ -26,7 +30,7 @@ namespace business.import
 
 					if(transaction == null)
 						transaction = new ImportedTransaction();
-
+						
 					if (line.StartsWith("!"))
 					{
 						if (line != "!Type:Bank")
@@ -88,6 +92,7 @@ namespace business.import
 							break;
 						case '^':
 							{
+								transaction.GenerateHash(_sha1);
 								account.Transactions.Add(transaction);
 								transaction = null;
 							}
