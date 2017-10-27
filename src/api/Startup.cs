@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace api
 {
@@ -24,7 +26,20 @@ namespace api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add Cors
+            services.AddCors(o => o.AddPolicy("MoneyboardPolicy", builder =>
+            {
+                builder.SetIsOriginAllowed(uri => uri.StartsWith("http://localhost:56779"));
+            }));
+
+
             services.AddMvc();
+
+            // Set Cors filter
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new CorsAuthorizationFilterFactory("MoneyboardPolicy"));
+            });
 
             //services.AddDbContext<dal.MoneyboardContext>(options => options.UseInMemoryDatabase("Moneyboard"));
             services.AddDbContext<dal_postgres.MoneyboardPostgresContext>(options => options.UseNpgsql(string.Format(dal_postgres.MoneyboardPostgresContextContextFactory.CONNECTION_STRING, "localhost")));
@@ -43,6 +58,9 @@ namespace api
             // Astuce pour appeler une méthode de SeedData
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             serviceScopeFactory.SeedData();
+
+            // Cors
+            app.UseCors("MoneyboardPolicy");
         }
     }
 }
