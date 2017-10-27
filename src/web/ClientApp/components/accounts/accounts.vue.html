@@ -1,0 +1,26 @@
+<template>
+    <div>
+        <h1>Comptes</h1>
+
+        <p>Résumé des comptes</p>
+
+        <table v-if="accounts.length" class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Solde</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="acc in accounts">
+                    <td>{{ acc.name }}</td>
+                    <td>{{ acc.balance.value }} {{ acc.balance.currency }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p v-else><em>Loading...</em></p>
+    </div>
+</template>
+
+<script src="./accounts.ts"></script>

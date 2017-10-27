@@ -1,0 +1,28 @@
+<template>
+    <div>
+        <h1>Importer</h1>
+
+        <p>Importer des transactions</p>
+
+        <input type="file" @change="onFileChange">
+
+        <table v-if="accounts.length" class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Solde</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="acc in accounts">
+                    <td>{{ acc.name }}</td>
+                    <td>{{ acc.balance.value }} {{ acc.balance.currency }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p v-else><em>Loading...</em></p>
+    </div>
+</template>
+
+<script src="./account_import.ts"></script>
