@@ -10,7 +10,7 @@ using dal.models;
 namespace api.Controllers
 {
     [Produces("application/json")]
-    [Route("Accounts")]
+    [Route("accounts")]
     public class AccountsController : MoneyboardController
     {
         protected readonly dal_postgres.MoneyboardPostgresContext _db;
