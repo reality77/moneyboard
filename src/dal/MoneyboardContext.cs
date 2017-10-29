@@ -75,6 +75,17 @@ namespace dal
 
                 this.SaveChanges();
             }
+
+            // Recalcul de la balance 
+            bool saveNecessary = false;
+            foreach (var account in this.Accounts)
+            {
+                if (RecomputeBalance(account))
+                    saveNecessary = true;
+            }
+
+            if (saveNecessary)
+                this.SaveChanges();
         }
 
         private ImportRegex AddImportRegex(string regex, dto.ETransactionType transactionType = dto.ETransactionType.Unknown)
@@ -108,6 +119,25 @@ namespace dal
         public Transaction GetTransaction(int id)
         {
             return this.Transactions.SingleOrDefault(a => a.ID == id);
+        }
+        
+        /// <summary>
+        /// Recompute the account current balance from the transactions
+        /// </summary>
+        /// <param name="account">The account from which the balance will be computed</param>
+        /// <returns>true if the balance has been changed (changes must then be saved)</returns>
+        public bool RecomputeBalance(Account account)
+        {
+            this.Entry(account).Collection(a => a.Transactions).Load();
+
+            var balance = account.InitialBalance + account.Transactions.Sum(a => a.Amount);
+            if (account.Balance != balance)
+            {
+                account.Balance = balance;
+                return true;
+            }
+            else
+                return false;
         }
     }
 }

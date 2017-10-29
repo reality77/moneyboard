@@ -21,5 +21,7 @@ namespace dal.models
 
         [Required]
         public dto.ECurrency Currency { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }
