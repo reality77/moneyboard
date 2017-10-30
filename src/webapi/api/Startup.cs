@@ -29,7 +29,9 @@ namespace api
             // Add Cors
             services.AddCors(o => o.AddPolicy("MoneyboardPolicy", builder =>
             {
-                builder.SetIsOriginAllowed(uri => uri.StartsWith("http://localhost:56779"));
+                builder.SetIsOriginAllowed(uri => uri.StartsWith("http://localhost:56779"))
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
             }));
 
 

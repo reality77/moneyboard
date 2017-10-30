@@ -116,11 +116,16 @@ export default class AccountTransactionsImportComponent extends Vue {
         }
         else {
             // Create payee
-            Axios.post(Globals.API_URL + '/payees', unsaved.unsavedNewPayeeName)
+            Axios.post(Globals.API_URL + '/payees', JSON.stringify(unsaved.unsavedNewPayeeName), {
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                }
+            })
             .then(response => response.data as Promise<IPayee>)
             .then(data => 
             {
                 //TODO : add payee in payees variable
+                this.payees = this.payees.concat([data]);
                 trx.detectedPayeeId = data.id;
 
                 this.validateTemporaryCategory(trx, unsaved);
@@ -137,11 +142,16 @@ export default class AccountTransactionsImportComponent extends Vue {
         }
         else {
             // Create category
-            Axios.post(Globals.API_URL + '/categories', unsaved.unsavedNewCategoryName)
+            Axios.post(Globals.API_URL + '/categories', JSON.stringify(unsaved.unsavedNewCategoryName), {
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                }
+            })
             .then(response => response.data as Promise<ICategory>)
             .then(data => 
             {
                 //TODO : add category in categories variable
+                this.categories = this.categories.concat([data]);
                 trx.detectedCategoryId = data.id;
                 
                 this.refreshTransactions(trx.detectedPayee, trx.detectedPayeeId, trx.detectedCategoryId, trx.detectedCaption);
@@ -175,4 +185,29 @@ export default class AccountTransactionsImportComponent extends Vue {
         return !trx.detectionSucceded || (trx.detectedPayee != null && trx.detectedPayeeId == null);
     }
 
+    selectPayee(trx: IImportedTransaction, payeeId: number) {
+        var unsaved = this.getUnsavedTransactionChanges(trx);
+        unsaved.unsavedExistingPayeeId = payeeId;
+    }
+
+    selectCategory(trx: IImportedTransaction, categoryId: number) {
+        var unsaved = this.getUnsavedTransactionChanges(trx);
+        unsaved.unsavedExistingCategoryId = categoryId;
+    }
+
+    displayPayeeName(payeeId: number) : string {
+        var array = this.payees.filter(p => p.id == payeeId);
+        if (array.length > 0)
+            return array[0].name;
+        else
+            return "";
+    }
+
+    displayCategoryName(categoryId: number): string {
+        var array = this.categories.filter(p => p.id == categoryId);
+        if (array.length > 0)
+            return array[0].name;
+        else
+            return "";
+    }
 }

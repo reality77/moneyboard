@@ -39,8 +39,6 @@ namespace dto.import
         // ------
         public bool DetectionSucceded { get; set; }
         
-        public bool PayeeDetectionSucceded { get; set; }
-        
         public string ImportTransactionHash { get; set; }
 
         public string Error { get; set; }
