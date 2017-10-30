@@ -2,12 +2,13 @@ import Vue from 'vue';
 import Axios from 'axios';
 
 import { Component } from 'vue-property-decorator';
+import { Globals } from '../common/globals';
 
-interface ImportedAccount {
-    transactions: ImportedTransaction[];
+interface IImportedAccount {
+    transactions: IImportedTransaction[];
 }
 
-interface ImportedTransaction {
+interface IImportedTransaction {
     transactionDate: Date;
     captionOrPayee: string;
     category: string;
@@ -27,7 +28,7 @@ interface ImportedTransaction {
 
 @Component
 export default class AccountTransactionsImportComponent extends Vue {
-    accounts: ImportedAccount[] = [];
+    accounts: IImportedAccount[] = [];
 
     onFileChange(e: any) {
 
@@ -36,12 +37,12 @@ export default class AccountTransactionsImportComponent extends Vue {
 
         formData.append("file", e.target.files[0]);
 
-        Axios.post('http://localhost:49871/import/prepare', formData, {
+        Axios.post(Globals.API_URL + '/import/prepare', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         })
-        .then(response => response.data as Promise<ImportedAccount[]>)
+        .then(response => response.data as Promise<IImportedAccount[]>)
         .then(data => { this.accounts = data; })
         .catch(error => console.log(error));
     };

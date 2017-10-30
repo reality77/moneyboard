@@ -1,26 +1,16 @@
+/// <reference path='../common/interfaces.ts'/>
+
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
-
-interface Currency {
-    currency: string;
-    value: number;
-}
-
-interface Account {
-    id: number;
-    name: string;
-    currency: string;
-    initialBalance: Currency;
-    balance: Currency;
-}
+import { Globals } from '../common/globals';
 
 @Component
 export default class AccountsComponent extends Vue {
-    accounts: Account[] = [];
+    accounts: IAccount[] = [];
 
     mounted() {
-        fetch('http://localhost:49871/accounts')
-            .then(response => response.json() as Promise<Account[]>)
+        fetch(Globals.API_URL + '/accounts')
+            .then(response => response.json() as Promise<IAccount[]>)
             .then(data => {
                 this.accounts = data;
             })
