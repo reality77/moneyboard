@@ -13,6 +13,7 @@
                     <th>Libell&eacute;</th>
                     <th>Montant</th>
                     <th>Tiers</th>
+                    <th>Catégorie</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,16 +22,40 @@
                     <td>{{ trx.transactionDate }}</td>
                     <td>{{ trx.captionOrPayee }}</td>
                     <td>{{ trx.amount }}</td>
-                    <td>
-                        <div  class="input-group" v-if="trx.detectedPayeeId == null">
-                            <input type="text" class="form-control" placeholder="Enter a payee name" v-model="trx.detectedPayee">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">Create new</button>
-                                <button class="btn btn-default" type="button">Select existing</button>
-                            </span>
-                            <span>{{  }}</span>
+                    <td v-if="trx.detectedPayeeId == null" colspan="2">
+                        <div class="input-group">
+                            <!-- PAYEE SELECTION --> 
+                            <div>
+                                <input type="text" class="form-control" placeholder="Enter a payee name" v-model="unsavedTransactionChanges[trx.importTransactionHash].unsavedNewPayeeName">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">Create new</button>
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select existing<span class="caret"></span></button>
+                                    <ul class="dropdown-menu" v-for="payee in payees">
+                                    <li><a href="#">{{ payee.name }}</a></li>
+                                    </ul>
+                                </span>
+                            </div>
+                            <!-- CATEGORY SELECTION --> 
+                            <div>
+                                <input type="text" class="form-control" placeholder="Enter a category name" v-model="unsavedTransactionChanges[trx.importTransactionHash].unsavedNewCategoryName">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">Create new</button>
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select existing<span class="caret"></span></button>
+                                    <ul class="dropdown-menu" v-for="cat in categories">
+                                    <li><a href="#">{{ cat.name }}</a></li>
+                                    </ul>
+                                </span>
+                            </div>
+                            <div>
+                                <input type="button" @click="onValidateTemporaryChanges(trx)"/>
+                            </div>
                         </div>
-                        <span v-if="trx.detectedPayeeId != null">{{ trx.detectedPayeeId }}</span>
+                    </td>
+                    <td v-if="trx.detectedPayeeId != null">
+                        <span >{{ trx.detectedPayeeId }}</span>
+                    </td>
+                    <td v-if="trx.detectedPayeeId != null"></td>
+                        <span >{{ trx.detectedCategoryId }}</span>
                     </td>
                 </tr>
             </tbody>
