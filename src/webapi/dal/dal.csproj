@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dto\dto.csproj" />
+    <ProjectReference Include="..\..\common\dto\dto.csproj" />
   </ItemGroup>
   
 </Project>

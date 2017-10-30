@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "api", "api\api.csproj", "{F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dal", "dal\dal.csproj", "{A6EF2633-A84F-4BD1-A343-971BFD373D36}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dto", "dto\dto.csproj", "{28D3A50D-BAE3-47E8-B520-50817C754BCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dto", "..\common\dto\dto.csproj", "{28D3A50D-BAE3-47E8-B520-50817C754BCF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dal_postgres", "dal_postgres\dal_postgres.csproj", "{330CA95C-7DF6-4EF2-8CA7-D7E58B6F6FF6}"
 EndProject
