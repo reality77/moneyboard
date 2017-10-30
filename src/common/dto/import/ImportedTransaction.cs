@@ -30,13 +30,17 @@ namespace dto.import
 
         public string DetectedCaption { get; set; }
 
+        public string DetectedPayee { get; set; }
+
         public int? DetectedPayeeId { get; set; }
 
         public int? DetectedCategoryId { get; set; }
 
         // ------
         public bool DetectionSucceded { get; set; }
-
+        
+        public bool PayeeDetectionSucceded { get; set; }
+        
         public string ImportTransactionHash { get; set; }
 
         public string Error { get; set; }

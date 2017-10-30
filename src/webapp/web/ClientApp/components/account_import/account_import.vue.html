@@ -12,13 +12,26 @@
                     <th>Date</th>
                     <th>Libell&eacute;</th>
                     <th>Montant</th>
+                    <th>Tiers</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="trx in accounts[0].transactions">
+                <!-- TODO : Create a component to display an imported AccountTransactionRow -->
+                <tr v-for="trx in accounts[0].transactions" v-if="isTransactionDisplayed(trx)">
                     <td>{{ trx.transactionDate }}</td>
                     <td>{{ trx.captionOrPayee }}</td>
                     <td>{{ trx.amount }}</td>
+                    <td>
+                        <div  class="input-group" v-if="trx.detectedPayeeId == null">
+                            <input type="text" class="form-control" placeholder="Enter a payee name" v-model="trx.detectedPayee">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">Create new</button>
+                                <button class="btn btn-default" type="button">Select existing</button>
+                            </span>
+                            <span>{{  }}</span>
+                        </div>
+                        <span v-if="trx.detectedPayeeId != null">{{ trx.detectedPayeeId }}</span>
+                    </td>
                 </tr>
             </tbody>
         </table>

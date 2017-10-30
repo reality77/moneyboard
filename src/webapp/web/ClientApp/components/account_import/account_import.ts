@@ -21,6 +21,7 @@ interface IImportedTransaction {
     detectedMode: string;
     detectedComment: string;
     detectedCaption: string;
+    detectedPayee: string;
     detectedPayeeId: number;
     detectedCategoryId: number;
     importTransactionHash: string;
@@ -29,6 +30,22 @@ interface IImportedTransaction {
 @Component
 export default class AccountTransactionsImportComponent extends Vue {
     accounts: IImportedAccount[] = [];
+    payees: IPayee[] = [];
+
+    isTransactionDisplayed(trx: IImportedTransaction) {
+        return !trx.detectionSucceded || (trx.detectedPayee != null && trx.detectedPayeeId == null);
+    }
+
+    mounted() {
+        fetch(Globals.API_URL + '/payees')
+            .then(response => response.json() as Promise<IPayee[]>)
+            .then(data => {
+                this.payees = data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
 
     onFileChange(e: any) {
 

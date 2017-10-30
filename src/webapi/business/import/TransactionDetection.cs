@@ -58,9 +58,11 @@ namespace business.import
                                 break;
                             case "payee":
                             {
+                                transaction.DetectedPayee = group.Value;
+
                                 if (importRegEx.ImportPayeeSelections != null && importRegEx.ImportPayeeSelections.Count() > 0)
                                 {
-                                    var payeeSelection = importRegEx.ImportPayeeSelections.SingleOrDefault(p => p.ImportedCaption.ToLower() == group.Value.ToLower());
+                                    var payeeSelection = importRegEx.ImportPayeeSelections.SingleOrDefault(p => p.ImportedCaption.ToLower() == transaction.DetectedPayee.ToLower());
 
                                     if (payeeSelection != null)
                                     {

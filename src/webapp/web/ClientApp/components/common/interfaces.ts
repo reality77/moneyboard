@@ -12,3 +12,13 @@ interface IAccount {
     initialBalance: ICurrency;
     balance: ICurrency;
 }
+
+interface IPayee {
+    id: number;
+    name: string;
+}
+
+interface ICategory {
+    id: number;
+    name: string;
+}
