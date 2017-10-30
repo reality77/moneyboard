@@ -36,27 +36,32 @@ namespace api.Controllers
 
         // POST: Categorys
         [HttpPost]
-        public void Post([FromBody] dto.Category category)
+        public ActionResult Post([FromBody] string categoryName)
         {
+            if(string.IsNullOrWhiteSpace(categoryName))
+                return BadRequest("Category name is required");
+
             var dbCategory = new dal.models.Category();
-            dbCategory.UpdateFrom(category, _db);
+            dbCategory.Name = categoryName;
 
             _db.Categories.Add(dbCategory);
             _db.SaveChanges();
+        
+            return Ok(dbCategory.CreateDto<dto.Category>(_db));
         }
 
         // PUT: Categorys/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] dto.Category category)
+        public void Put(int id, [FromBody] string categoryName)
         {
             //TODO : test category id
-            category.ID = id;
+            /*category.ID = id;
 
             var dbCategory = _db.GetCategory(id);
             //TODO : test null
 
             dbCategory.UpdateFrom(category, _db);
-            _db.SaveChanges();
+            _db.SaveChanges();*/
         }
 
         // DELETE: Categorys/5

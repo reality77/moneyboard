@@ -36,27 +36,33 @@ namespace api.Controllers
 
         // POST: Payees
         [HttpPost]
-        public void Post([FromBody] dto.Payee payee)
+        public IActionResult Post([FromBody] string payeeName)
         {
+            if(string.IsNullOrWhiteSpace(payeeName))
+                return BadRequest("Payee name is required");
+
             var dbPayee = new dal.models.Payee();
-            dbPayee.UpdateFrom(payee, _db);
+            dbPayee.Name = payeeName;
 
             _db.Payees.Add(dbPayee);
             _db.SaveChanges();
+
+            return Ok(dbPayee.CreateDto<dto.Payee>(_db));
         }
 
         // PUT: Payees/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] dto.Payee payee)
+        public ActionResult Put(int id, [FromBody] string payeeName)
         {
             //TODO : test payee id
-            payee.ID = id;
+            /*payee.ID = id;
 
             var dbPayee = _db.GetPayee(id);
             //TODO : test null
 
             dbPayee.UpdateFrom(payee, _db);
-            _db.SaveChanges();
+            _db.SaveChanges();*/
+            return NoContent();
         }
 
         // DELETE: Payees/5
