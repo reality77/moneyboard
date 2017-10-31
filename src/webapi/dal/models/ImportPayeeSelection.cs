@@ -10,7 +10,7 @@ namespace dal.models
         [Key]
         public int ID { get; set; }
 
-        public int ImportRegexID { get; set; }
+        public int ImportRegexId { get; set; }
         public ImportRegex ImportRegex { get; set; }
 
         [Required]

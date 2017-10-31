@@ -17,6 +17,7 @@ interface IImportedTransaction {
     memo: string;
     number: string;
     detectionSucceded: boolean;
+    detectedRegexId: number;
     detectedUserDate: Date;
     detectedMode: string;
     detectedComment: string;
@@ -138,7 +139,7 @@ export default class AccountTransactionsImportComponent extends Vue {
 
         if(unsaved.unsavedExistingCategoryId != null) {
             trx.detectedCategoryId = unsaved.unsavedExistingCategoryId;
-            this.refreshTransactions(trx.detectedPayee, trx.detectedPayeeId, trx.detectedCategoryId, trx.detectedCaption);
+            this.registerPayeeRule(trx);
         }
         else {
             // Create category
@@ -154,10 +155,33 @@ export default class AccountTransactionsImportComponent extends Vue {
                 this.categories = this.categories.concat([data]);
                 trx.detectedCategoryId = data.id;
                 
-                this.refreshTransactions(trx.detectedPayee, trx.detectedPayeeId, trx.detectedCategoryId, trx.detectedCaption);
+                this.registerPayeeRule(trx);
             })
             .catch(error => alert(error));
         }    
+    }
+
+    private registerPayeeRule(trx:IImportedTransaction) {
+        
+        // Create payee rule
+        var payeeRule = {
+            regexId: trx.detectedRegexId,
+            importedCaption: trx.detectedPayee,
+            payeeId: trx.detectedPayeeId,
+            categoryId: trx.detectedCategoryId,
+            transactionCaption: trx.detectedCaption
+        };
+
+        Axios.post(Globals.API_URL + '/import/registerpayeerule', JSON.stringify(payeeRule), {
+            headers: {
+                "Content-Type": "application/json;charset=utf-8",
+            }
+        })
+        .then(response => 
+        {
+            this.refreshTransactions(trx.detectedPayee, trx.detectedPayeeId, trx.detectedCategoryId, trx.detectedCaption);
+        })
+        .catch(error => alert(error));
     }
 
     private refreshTransactions(detectedPayee:string, payeeId:number, categoryId:number, caption:string) {

@@ -74,5 +74,29 @@ namespace api.Controllers
 
             return new OkObjectResult(listImportedAccount);
         }
+
+        [HttpPost("registerpayeerule")]
+        //[RequestFormSizeLimit(valueLengthLimit:200000)]
+        public IActionResult RegisterPayeeRule([FromBody] dto.import.PayeeRuleRegistration payeeRegistration)
+        {
+            var payeeSelection = _db.ImportPayeeSelections.Where(ps => ps.ImportRegexId == payeeRegistration.RegexId && ps.TransactionCaption.Trim().ToLower() == payeeRegistration.TransactionCaption.Trim().ToLower()).SingleOrDefault();
+
+            if(payeeSelection != null)
+                return BadRequest($"There is already a ruleA on regex {payeeRegistration.RegexId} for the caption '{payeeRegistration.TransactionCaption}'");
+
+            payeeSelection = new dal.models.ImportPayeeSelection
+            {
+                ImportRegexId = payeeRegistration.RegexId,
+                ImportedCaption = payeeRegistration.ImportedCaption,
+                PayeeId = payeeRegistration.PayeeId,
+                CategoryId = payeeRegistration.CategoryId,
+                TransactionCaption = payeeRegistration.TransactionCaption,
+            };
+
+            _db.ImportPayeeSelections.Add(payeeSelection);
+            _db.SaveChanges();
+
+            return NoContent();
+        }
     }
 }

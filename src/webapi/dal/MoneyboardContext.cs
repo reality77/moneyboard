@@ -98,7 +98,7 @@ namespace dal
 
         private void AddImportPayeeSelection(ImportRegex regex, string importedCaption, int payeeId, int categoryId)
         {
-            this.ImportPayeeSelections.Add(new ImportPayeeSelection { ImportRegexID = regex.ID, ImportedCaption = importedCaption, PayeeId = payeeId, CategoryId = categoryId });
+            this.ImportPayeeSelections.Add(new ImportPayeeSelection { ImportRegexId = regex.ID, ImportedCaption = importedCaption, PayeeId = payeeId, CategoryId = categoryId });
         }
 
         public Account GetAccount(int id)

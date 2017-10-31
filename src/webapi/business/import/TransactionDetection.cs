@@ -33,6 +33,7 @@ namespace business.import
                     continue;
 
                 transaction.DetectionSucceded = true;
+                transaction.DetectedRegexId = importRegEx.ID;
 
                 foreach(Group group in match.Groups)
                 {
