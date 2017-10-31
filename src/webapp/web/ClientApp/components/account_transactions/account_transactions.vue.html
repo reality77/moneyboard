@@ -1,0 +1,35 @@
+<template>
+    <div>
+        <h1>Comptes</h1>
+
+        <p>Résumé des comptes</p>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Libell&eacute;</th>
+                    <th>Tiers</th>
+                    <th>Cat&eacute;gorie</th>
+                    <th>Montant</th>
+                    <th>Solde</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="trx in transactionsview.transactions">
+                    <td>{{ trx.transaction.date }}</td>
+                    <td>{{ trx.transaction.type }}</td>
+                    <td>{{ trx.transaction.caption }}</td>
+                    <td>{{ trx.transaction.payeeName }}</td>
+                    <td>{{ trx.transaction.categoryName }}</td>
+                    <td>{{ trx.transaction.amount.value }} {{ trx.transaction.amount.currency }}</td>
+                    <td>{{ trx.balance.value }} {{ trx.balance.currency }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</template>
+
+<script src="./account_transactions.ts"></script>

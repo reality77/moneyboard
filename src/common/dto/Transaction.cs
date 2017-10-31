@@ -7,15 +7,18 @@ namespace dto
     public class Transaction : IDtoObject
     {
         public int ID { get; set; }
-        public Account Account { get; set; }
+        public int AccountId { get; set; }
+        public string AccountName { get; set; }
         public string Caption { get; set; }
         public CurrencyNumber Amount { get; set; }
         public ETransactionType Type { get; set; }
         public DateTime Date { get; set; }
         public DateTime? UserDate { get; set; }
 
-        public Category Category { get; set; }
-        public Payee Payee { get; set; }
+        public int? CategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public int? PayeeId { get; set; }
+        public string PayeeName { get; set; }
 
         public string Comment { get; set; }
         public string ImportedTransactionCaption { get; set; }

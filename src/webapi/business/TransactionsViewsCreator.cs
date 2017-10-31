@@ -84,7 +84,7 @@ namespace business
                 { 
                     RowId = rowId,
                     Transaction = enumerator.Current.CreateDto<Transaction>(db),
-                    Balance = new CurrencyNumber { Currency = enumerator.Current.Account.Currency, Value = balance.Value }
+                    Balance = new CurrencyNumber { Currency = enumerator.Current.Account.Currency, Value = balance.Value + enumerator.Current.Amount }
                 };
 
                 rowId++;

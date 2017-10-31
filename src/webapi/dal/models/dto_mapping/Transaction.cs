@@ -12,17 +12,24 @@ namespace dal.models
         {
             var dtoObject = (dto.Transaction)dto;
             dtoObject.ID = this.ID;
-            dtoObject.Account = this.Account.CreateDto<dto.Account>(db);
-            dtoObject.Amount = new dto.CurrencyNumber { Currency = dtoObject.Account.Currency, Value = this.Amount };
+            dtoObject.AccountId = this.Account.ID;
+            dtoObject.AccountName = this.Account.Name;
+            dtoObject.Amount = new dto.CurrencyNumber { Currency = this.Account.Currency, Value = this.Amount };
             dtoObject.Caption = this.Caption;
             dtoObject.Date = this.Date;
 
-            if(this.Category != null)
-                dtoObject.Category = this.Category.CreateDto<dto.Category>(db);
+            if (this.Category != null)
+            {
+                dtoObject.CategoryId = this.Category.ID;
+                dtoObject.CategoryName = this.Category.Name;
+            }
+
+            if (this.Payee != null)
+            {
+                dtoObject.PayeeId = this.Payee.ID;
+                dtoObject.PayeeName = this.Payee.Name;
+            }
             
-            if(this.Payee != null)
-                dtoObject.Payee = this.Payee.CreateDto<dto.Payee>(db);
-                
             dtoObject.Type = this.Type;
 
             dtoObject.UserDate = this.UserDate;
@@ -37,14 +44,16 @@ namespace dal.models
         {
             var dtoObject = (dto.Transaction)dto;
             this.ID = dtoObject.ID;
-            this.AccountId = dtoObject.Account.ID;
+            this.AccountId = dtoObject.AccountId;
 
             this.Caption = dtoObject.Caption;
             this.Amount = dtoObject.Amount.Value;
 
-            this.CategoryId = dtoObject.Category?.ID;
+            if (dtoObject.CategoryId != null)
+                this.CategoryId = dtoObject.CategoryId;
 
-            this.PayeeId = dtoObject.Payee?.ID;
+            if (dtoObject.PayeeId != null)
+                this.PayeeId = dtoObject.PayeeId;
 
             this.Type = this.Type;
             this.UserDate = this.UserDate;
