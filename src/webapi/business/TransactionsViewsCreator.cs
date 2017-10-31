@@ -36,7 +36,7 @@ namespace business
             //TODO : Assert account != null
 
             var trxOnDate = db.Transactions
-                .Where(t => t.UserDate.Date == date.Date)
+                .Where(t => t.Date.Date == date.Date)
                 .Select(t => t.ID);
 
             decimal sum;
@@ -47,13 +47,13 @@ namespace business
                     throw new Exception($"La transaction {beforeTransactionId} n'est pas à la date {date.Date}");
 
                 sum = db.Transactions
-                    .Where(t => t.UserDate.Date <= date.Date && t.ID < beforeTransactionId)
+                    .Where(t => t.Date.Date <= date.Date && t.ID < beforeTransactionId)
                     .Sum(t => t.Amount);
             }
             else
             {
                 sum = db.Transactions
-                    .Where(t => t.UserDate.Date <= date.Date)
+                    .Where(t => t.Date.Date <= date.Date)
                     .Sum(t => t.Amount);                    
             }
 
@@ -77,7 +77,7 @@ namespace business
                 {
                     // on prend tous les transactions à compter de la date suivante de la première transaction de la liste
                     var firstTransaction = enumerator.Current;
-                    balance = GetBalanceAt(firstTransaction.AccountId, firstTransaction.UserDate, firstTransaction.ID, db);
+                    balance = GetBalanceAt(firstTransaction.AccountId, firstTransaction.Date, firstTransaction.ID, db);
                 }
 
                 yield return new AccountTransactionRow 

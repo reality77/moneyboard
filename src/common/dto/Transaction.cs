@@ -11,10 +11,15 @@ namespace dto
         public string Caption { get; set; }
         public CurrencyNumber Amount { get; set; }
         public ETransactionType Type { get; set; }
-        public DateTime UserDate { get; set; }
+        public DateTime Date { get; set; }
+        public DateTime? UserDate { get; set; }
 
         public Category Category { get; set; }
         public Payee Payee { get; set; }
+
+        public string Comment { get; set; }
+        public string ImportedTransactionCaption { get; set; }
+        public string ImportedTransactionHash { get; set; }
     }
 
     public enum ETransactionType : int

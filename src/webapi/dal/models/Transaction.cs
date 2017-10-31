@@ -22,12 +22,20 @@ namespace dal.models
         public dto.ETransactionType Type { get; set; }
 
         [Required]
-        public DateTime UserDate { get; set; }
+        public DateTime Date { get; set; }
+
+        public DateTime? UserDate { get; set; }
 
         public int? CategoryId {get; set; }
         public Category Category { get; set; }
 
         public int? PayeeId {get; set; }
         public Payee Payee { get; set; }
+
+        public string Comment { get; set; }
+
+        public string ImportedTransactionCaption { get; set; }
+
+        public string ImportedTransactionHash { get; set; }
     }
 }

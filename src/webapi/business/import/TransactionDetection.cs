@@ -32,6 +32,7 @@ namespace business.import
                 if(!match.Success)
                     continue;
 
+                transaction.DetectedTransactionType = importRegEx.TransactionType;
                 transaction.DetectionSucceded = true;
                 transaction.DetectedRegexId = importRegEx.ID;
 
@@ -42,8 +43,7 @@ namespace business.import
 
                     if(group.Name.StartsWith(USERDATE_TAG))
                     {
-                        DateTime date;
-                        if(DateTime.TryParseExact(group.Value, group.Name.Remove(0, USERDATE_TAG.Length), DateTimeFormatInfo.CurrentInfo, DateTimeStyles.None, out date))
+                        if(DateTime.TryParseExact(group.Value, group.Name.Remove(0, USERDATE_TAG.Length), DateTimeFormatInfo.CurrentInfo, DateTimeStyles.None, out DateTime date))
                             transaction.DetectedUserDate = date;
                         else
                         {

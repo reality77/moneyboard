@@ -5,6 +5,7 @@ import { Component } from 'vue-property-decorator';
 import { Globals } from '../common/globals';
 
 interface IImportedAccount {
+    name: string;
     transactions: IImportedTransaction[];
 }
 
@@ -141,7 +142,7 @@ export default class AccountTransactionsImportComponent extends Vue {
             trx.detectedCategoryId = unsaved.unsavedExistingCategoryId;
             this.registerPayeeRule(trx);
         }
-        else {
+        else if (unsaved.unsavedNewCategoryName != null && unsaved.unsavedNewCategoryName.trim().length > 0) {
             // Create category
             Axios.post(Globals.API_URL + '/categories', JSON.stringify(unsaved.unsavedNewCategoryName), {
                 headers: {
@@ -158,7 +159,10 @@ export default class AccountTransactionsImportComponent extends Vue {
                 this.registerPayeeRule(trx);
             })
             .catch(error => alert(error));
-        }    
+        }
+        else {
+            this.registerPayeeRule(trx);
+        }
     }
 
     private registerPayeeRule(trx:IImportedTransaction) {
@@ -202,7 +206,21 @@ export default class AccountTransactionsImportComponent extends Vue {
         var unsaved = this.unsavedTransactionChanges[hash];
         return unsaved;
     }
-    
+
+    // --- Upload transactions
+    uploadTransactions(acc: IAccount) {
+
+        Axios.post(Globals.API_URL + '/import/uploadtoaccount', JSON.stringify(acc), {
+            headers: {
+                "Content-Type": "application/json;charset=utf-8",
+            }
+        })
+            .then(response => {
+                alert("Transactions uploaded");
+            })
+            .catch(error => alert(error));
+    }
+
     // --- Display method helpers
 
     isTransactionDisplayed(trx: IImportedTransaction) {

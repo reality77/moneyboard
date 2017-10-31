@@ -19,7 +19,7 @@ namespace dal.models
         public int PayeeId { get; set; }
         public Payee Payee { get; set; }
 
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public Category Category { get; set; }
 
         public string TransactionCaption { get; set; }

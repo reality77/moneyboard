@@ -41,7 +41,12 @@ namespace api.Controllers
             if(string.IsNullOrWhiteSpace(payeeName))
                 return BadRequest("Payee name is required");
 
-            var dbPayee = new dal.models.Payee();
+            var dbPayee = _db.Payees.SingleOrDefault(p => p.Name.ToLower().Trim() == payeeName.Trim().ToLower());
+
+            if(dbPayee != null)
+                return BadRequest("Payee name already exists");
+
+            dbPayee = new dal.models.Payee();
             dbPayee.Name = payeeName;
 
             _db.Payees.Add(dbPayee);

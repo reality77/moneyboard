@@ -36,6 +36,8 @@ namespace dto.import
 
         public int? DetectedCategoryId { get; set; }
 
+        public ETransactionType DetectedTransactionType { get; set; }
+
         // ------
         public bool DetectionSucceded { get; set; }
         

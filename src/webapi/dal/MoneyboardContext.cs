@@ -28,7 +28,7 @@ namespace dal
             // Seeding for testing purposes currently
             if(!this.Accounts.Any())
             {
-                var defaultAccount = new Account
+                /*var defaultAccount = new Account
                     {
                         Name = "Courant",
                         InitialBalance = 0,
@@ -62,7 +62,7 @@ namespace dal
                     new Transaction { Account = defaultAccount, Amount = -10, Caption = "T10",UserDate = DateTime.Parse("2017-01-04") }
                 );
 
-                this.SaveChanges();
+                this.SaveChanges();*/
             }
 
             // --- Création des regex d'import

@@ -6,6 +6,8 @@ namespace dto.import
 {
     public class ImportedAccount
     {
+        public string Name { get; set; }
+
         public List<ImportedTransaction> Transactions { get; set; }
 
         public ImportedAccount()

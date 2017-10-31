@@ -12,7 +12,7 @@ namespace dto.import
 
         public int PayeeId { get; set; }
 
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         public string TransactionCaption { get; set; }
     }

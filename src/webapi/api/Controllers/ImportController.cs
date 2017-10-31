@@ -33,7 +33,7 @@ namespace api.Controllers
                 string body = reader.ReadToEnd();
             }*/
 
-            foreach (var file in  Request.Form.Files)
+            foreach (var file in Request.Form.Files)
             {
                 var stream = file.OpenReadStream();
 
@@ -59,9 +59,8 @@ namespace api.Controllers
                 {
                     importedAccount = importer.Import(stream);
 
-
                     var detector = new TransactionDetection(_db);
-                    foreach(var transaction in importedAccount.Transactions)
+                    foreach (var transaction in importedAccount.Transactions)
                         detector.DetectTransaction(transaction);
 
                     listImportedAccount.Add(importedAccount);
@@ -79,10 +78,10 @@ namespace api.Controllers
         //[RequestFormSizeLimit(valueLengthLimit:200000)]
         public IActionResult RegisterPayeeRule([FromBody] dto.import.PayeeRuleRegistration payeeRegistration)
         {
-            var payeeSelection = _db.ImportPayeeSelections.Where(ps => ps.ImportRegexId == payeeRegistration.RegexId && ps.TransactionCaption.Trim().ToLower() == payeeRegistration.TransactionCaption.Trim().ToLower()).SingleOrDefault();
+            var payeeSelection = _db.ImportPayeeSelections.Where(ps => ps.ImportRegexId == payeeRegistration.RegexId && ps.ImportedCaption.Trim().ToLower() == payeeRegistration.ImportedCaption.Trim().ToLower()).SingleOrDefault();
 
-            if(payeeSelection != null)
-                return BadRequest($"There is already a ruleA on regex {payeeRegistration.RegexId} for the caption '{payeeRegistration.TransactionCaption}'");
+            if (payeeSelection != null)
+                return BadRequest($"There is already a ruleA on regex {payeeRegistration.RegexId} for the caption '{payeeRegistration.ImportedCaption}'");
 
             payeeSelection = new dal.models.ImportPayeeSelection
             {
@@ -95,6 +94,58 @@ namespace api.Controllers
 
             _db.ImportPayeeSelections.Add(payeeSelection);
             _db.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpPost("uploadtoaccount")]
+        public IActionResult UploadToAccount([FromBody] ImportedAccount importedAccount)
+        {
+            var account = _db.Accounts.SingleOrDefault(a => a.Name == importedAccount.Name);
+
+            using (var dbTransaction = _db.Database.BeginTransaction())
+            {
+                try
+                {
+                    if (account == null)
+                    {
+                        account = new dal.models.Account
+                        {
+                            Name = importedAccount.Name
+                        };
+
+                        _db.Accounts.Add(account);
+                    }
+
+                    _db.SaveChanges();
+
+                    foreach (var importedTrx in importedAccount.Transactions)
+                    {
+                        var trx = new dal.models.Transaction
+                        {
+                            AccountId = account.ID,
+                            Amount = importedTrx.Amount,
+                            Caption = importedTrx.DetectedCaption ?? importedTrx.CaptionOrPayee,
+                            CategoryId = importedTrx.DetectedCategoryId,
+                            PayeeId = importedTrx.DetectedPayeeId,
+                            Type = importedTrx.DetectedTransactionType,
+                            Date = importedTrx.TransactionDate,
+                            UserDate = importedTrx.DetectedUserDate,
+                            ImportedTransactionCaption = importedTrx.CaptionOrPayee
+                        };
+
+                        _db.Transactions.Add(trx);
+                    }
+
+                    _db.SaveChanges();
+                    dbTransaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    dbTransaction.Rollback();
+                    throw;
+                }
+            }
 
             return NoContent();
         }

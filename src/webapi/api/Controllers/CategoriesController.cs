@@ -41,7 +41,12 @@ namespace api.Controllers
             if(string.IsNullOrWhiteSpace(categoryName))
                 return BadRequest("Category name is required");
 
-            var dbCategory = new dal.models.Category();
+            var dbCategory = _db.Categories.SingleOrDefault(p => p.Name.ToLower().Trim() == categoryName.Trim().ToLower());
+
+            if (dbCategory != null)
+                return BadRequest("Category name already exists");
+
+            dbCategory = new dal.models.Category();
             dbCategory.Name = categoryName;
 
             _db.Categories.Add(dbCategory);
