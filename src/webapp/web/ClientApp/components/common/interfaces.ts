@@ -30,6 +30,8 @@ interface ICategory {
 }
 
 interface ITransactionsView {
+    pageId: number,
+    pageCount: number;
     transactions: ITransactionRow[]; 
 }
 

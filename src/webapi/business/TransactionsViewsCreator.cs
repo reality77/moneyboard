@@ -11,23 +11,28 @@ namespace business
     {
         public static TransactionsView GenerateAccountView(int accountId, int pageId, int itemsPerPage, dal.MoneyboardContext db)
         {
+            var tview = new TransactionsView()
+            {
+                PageId = pageId,
+            };
+
             var account = db.GetAccount(accountId);
 
             var trx = db.Transactions
                 .Include(t => t.Account)
                 .Include(t => t.Category)
                 .Include(t => t.Payee)
-                .Where(t => t.AccountId == accountId)
-                .Skip(pageId * itemsPerPage)
+                .Where(t => t.AccountId == accountId);
+
+            tview.PageCount = (1 + trx.Count()) / itemsPerPage;
+
+            tview.Transactions = trx.Skip(pageId * itemsPerPage)
                 .Take(itemsPerPage)
                 .OrderBy(t => t.UserDate)
                 .ThenBy(t => t.ID)
                 .ConvertToAccountTransactionRow(db);
 
-            return new TransactionsView
-            {
-                Transactions = trx
-            };
+            return tview;
         }
 
         public static CurrencyNumber GetBalanceAt(int accountId, DateTime date, int? beforeTransactionId, dal.MoneyboardContext db)
@@ -64,7 +69,6 @@ namespace business
         public static IEnumerable<TransactionRow> ConvertToAccountTransactionRow(this IEnumerable<dal.models.Transaction> transactions, dal.MoneyboardContext db)
         {
             var enumerator = transactions.GetEnumerator();
-
 
             // Parcours for..each
             int rowId = 0;

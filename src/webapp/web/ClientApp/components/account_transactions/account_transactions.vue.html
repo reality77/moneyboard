@@ -4,6 +4,14 @@
 
         <p>Résumé des comptes</p>
 
+        <ul class="pagination">
+            <li v-bind:class="{'disabled':(transactionsview.pageId === 0)}"><a style="cursor:pointer" v-on:click="paginate(transactionsview.pageId - 1)">&laquo;</a></li>
+            <li v-for="page in pagerIndexes" v-bind:class="{'active':(page === transactionsview.pageId)}">
+                <a class="page-link" style="cursor:pointer" v-on:click="paginate(page)">{{ page + 1 }}</a>
+            </li>
+            <li v-bind:class="{'disabled':(transactionsview.pageId >= transactionsview.pageCount - 1)}"><a style="cursor:pointer" v-on:click="paginate(transactionsview.pageId + 1)">&raquo;</a></li>
+        </ul>
+
         <table class="table">
             <thead>
                 <tr>
