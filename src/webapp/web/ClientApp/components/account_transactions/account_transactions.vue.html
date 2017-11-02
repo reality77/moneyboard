@@ -2,7 +2,7 @@
     <div>
         <h1>Comptes</h1>
 
-        <p>Résumé des comptes</p>
+        <p>Rï¿½sumï¿½ des comptes</p>
 
         <ul class="pagination">
             <li v-bind:class="{'disabled':(transactionsview.pageId === 0)}"><a style="cursor:pointer" v-on:click="paginate(transactionsview.pageId - 1)">&laquo;</a></li>
@@ -26,13 +26,17 @@
             </thead>
             <tbody>
                 <tr v-for="trx in transactionsview.transactions">
-                    <td>{{ trx.transaction.date }}</td>
+                    <td>{{ getFormattedDate(trx.transaction.date) }}</td>
                     <td>{{ trx.transaction.type }}</td>
                     <td>{{ trx.transaction.caption }}</td>
                     <td>{{ trx.transaction.payeeName }}</td>
                     <td>{{ trx.transaction.categoryName }}</td>
                     <td>{{ trx.transaction.amount.value }} {{ trx.transaction.amount.currency }}</td>
                     <td>{{ trx.balance.value }} {{ trx.balance.currency }}</td>
+                    <td>{{ getFormattedDate(trx.transaction.userDate) }}</td>
+                    <td>{{ trx.comment }}</td>
+                    <td>{{ trx.importedTransactionCaption }}</td>
+                    <td>{{ trx.importedTransactionHash }}</td>
                 </tr>
             </tbody>
         </table>

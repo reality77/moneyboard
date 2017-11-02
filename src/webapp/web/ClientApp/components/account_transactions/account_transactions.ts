@@ -24,6 +24,17 @@ export default class TransactionsViewComponent extends Vue {
             .then(response => response.json() as Promise<ITransactionsView>)
             .then(data => {
                 this.transactionsview = data;
+
+                // --- Javascript deserialization issue : Dates are deserialized as strings
+                // Workaround : We rebuild the dates manually
+                this.transactionsview.transactions.forEach(trx => {
+                    trx.transaction.date = new Date(trx.transaction.date);
+
+                    if(trx.transaction.userDate != null)
+                        trx.transaction.userDate = new Date(trx.transaction.userDate);
+                });
+                // ---
+
                 var min = pageId - 2;
 
                 if (min < 0)
@@ -49,5 +60,11 @@ export default class TransactionsViewComponent extends Vue {
             .catch(error => {
                 console.log(error);
             });
+    }
+
+    getFormattedDate(date:Date) : string {
+        if(date == null)
+            return "";
+        return date.toLocaleDateString();
     }
 }

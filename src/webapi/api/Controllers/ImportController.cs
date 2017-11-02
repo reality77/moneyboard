@@ -81,7 +81,7 @@ namespace api.Controllers
             var payeeSelection = _db.ImportPayeeSelections.Where(ps => ps.ImportRegexId == payeeRegistration.RegexId && ps.ImportedCaption.Trim().ToLower() == payeeRegistration.ImportedCaption.Trim().ToLower()).SingleOrDefault();
 
             if (payeeSelection != null)
-                return BadRequest($"There is already a ruleA on regex {payeeRegistration.RegexId} for the caption '{payeeRegistration.ImportedCaption}'");
+                return BadRequest($"There is already a rule on regex {payeeRegistration.RegexId} for the caption '{payeeRegistration.ImportedCaption}'");
 
             payeeSelection = new dal.models.ImportPayeeSelection
             {
@@ -131,11 +131,14 @@ namespace api.Controllers
                             Type = importedTrx.DetectedTransactionType,
                             Date = importedTrx.TransactionDate,
                             UserDate = importedTrx.DetectedUserDate,
-                            ImportedTransactionCaption = importedTrx.CaptionOrPayee
+                            ImportedTransactionCaption = importedTrx.CaptionOrPayee,
+                            ImportedTransactionHash = importedTrx.ImportTransactionHash
                         };
 
                         _db.Transactions.Add(trx);
                     }
+
+                    _db.RecomputeBalance(account);
 
                     _db.SaveChanges();
                     dbTransaction.Commit();

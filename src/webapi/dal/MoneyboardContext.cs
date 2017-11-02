@@ -69,7 +69,7 @@ namespace dal
             if (this.ImportRegexes.Count() < 3)
             {
                 AddImportRegex("^VIR (?'mode'(.*?)) (?'payee'(.*))$", dto.ETransactionType.Transfer);
-                AddImportRegex("^PAIEMENT (?'mode'(.*?)) (?'user_date_ddMMyy'(.*?)) (?'comment'(.*?)) (?'payee'(.*))$", dto.ETransactionType.Payment);
+                AddImportRegex("^PAIEMENT (?'mode'(.*?)) (?'user_date_FR'(.*?)) ((?'comment'(.*?)) |)(?'payee'(.*))$", dto.ETransactionType.Payment);
                 AddImportRegex("^RETRAIT (?'mode'(.*?)) (?'user_date_ddMMyy'(.*?)) (?'comment'(.*))$", dto.ETransactionType.Withdrawal);
                 AddImportRegex("^PRLV (?'mode'(.*?)) (?'payee'(.*))$", dto.ETransactionType.Debit);
 

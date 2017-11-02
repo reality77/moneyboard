@@ -43,7 +43,26 @@ namespace business.import
 
                     if(group.Name.StartsWith(USERDATE_TAG))
                     {
-                        if(DateTime.TryParseExact(group.Value, group.Name.Remove(0, USERDATE_TAG.Length), DateTimeFormatInfo.CurrentInfo, DateTimeStyles.None, out DateTime date))
+                        var userDateCulture = group.Name.Remove(0, USERDATE_TAG.Length);
+                        
+                        List<string> dateFormats = new List<string>();
+                        switch(userDateCulture)
+                        {
+                            case "FR":
+                            {
+                                dateFormats.Add("ddMMyyyy");
+                                dateFormats.Add("ddMMyy");
+                            }
+                                break;
+                            case "EN":
+                            {
+                                dateFormats.Add("MMddyyyy");
+                                dateFormats.Add("MMddyy");
+                            }
+                                break;
+                        }
+
+                        if(DateTime.TryParseExact(group.Value, dateFormats.ToArray(), DateTimeFormatInfo.CurrentInfo, DateTimeStyles.None, out DateTime date))
                             transaction.DetectedUserDate = date;
                         else
                         {
