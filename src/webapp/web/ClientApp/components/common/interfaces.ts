@@ -58,3 +58,7 @@ interface ITransaction {
     importedTransactionCaption: string;
     importedTransactionHash: string;
 }
+
+interface IDateStatistics {
+    data: { [key: number]: ICurrency; }; 
+}

@@ -80,5 +80,42 @@ namespace api.Controllers
             _db.Payees.Remove(dbPayee);
             _db.SaveChanges();
         }
+
+        // GET: Payees/statistics
+        [HttpGet("statisticsbypayee")]
+        public dto.statistics.DateStatistics StatisticsByPayee(int accountId, int payeeId, DateTime? dateStart = null, DateTime? dateEnd = null)
+        {
+            if (dateEnd == null)
+                dateEnd = DateTime.Today;
+            else
+                dateEnd = dateEnd.Value.Date;
+
+            if (dateStart == null)
+                dateStart = dateEnd.Value.AddYears(-1);
+            else
+                dateStart = dateStart.Value.Date;
+
+            var account = _db.GetAccount(accountId);
+            var payee = _db.GetPayee(payeeId);
+
+            var data = _db.Transactions.Where(t => t.PayeeId == payeeId)
+                .GroupBy(t => t.Date.Year * 100 + t.Date.Month)
+                .Select(g => new Tuple<int, decimal>(g.Key, g.Sum(t => t.Amount)));
+
+            var stat = new dto.statistics.DateStatistics();
+
+            foreach (var item in data)
+            {
+                stat.Data.Add(item.Item1,
+                    new dto.CurrencyNumber
+                    {
+                        Currency = account.Currency,
+                        Value = item.Item2,
+                    });
+            }
+
+            return stat;
+        }
+
     }
 }

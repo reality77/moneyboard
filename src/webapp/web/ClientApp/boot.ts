@@ -11,6 +11,7 @@ const routes = [
     { path: '/accounts', component: require('./components/accounts/accounts.vue.html') },
     { path: '/account_import', component: require('./components/account_import/account_import.vue.html') },
     { path: '/account_transactions/:id', component: require('./components/account_transactions/account_transactions.vue.html') }
+    { path: '/payee/:id', component: require('./components/payee/payee.vue.html') }
 ];
 
 new Vue({
