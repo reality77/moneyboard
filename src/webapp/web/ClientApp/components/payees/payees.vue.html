@@ -1,0 +1,17 @@
+<template>
+    <div>
+        <h1>Liste des tiers</h1>
+
+        <div v-if="payees != null">
+
+            <ul>
+                <li v-for="payee in payees">
+                    <a :href="getPayeeUrl(payee.id)">{{ payee.name }}</a>
+                </li>
+            </ul>
+        </div>
+        <span v-else>Loading...</span>
+    </div>
+</template>
+
+<script src="./payees.ts"></script>

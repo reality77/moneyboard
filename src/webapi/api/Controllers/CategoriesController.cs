@@ -79,5 +79,41 @@ namespace api.Controllers
             _db.Categories.Remove(dbCategory);
             _db.SaveChanges();
         }
+
+        // GET: Categorys/statistics
+        [HttpGet("statisticsbycategory")]
+        public dto.statistics.DateStatistics StatisticsByCategory(int accountId, int categoryId, DateTime? dateStart = null, DateTime? dateEnd = null)
+        {
+            if (dateEnd == null)
+                dateEnd = DateTime.Today;
+            else
+                dateEnd = dateEnd.Value.Date;
+
+            if (dateStart == null)
+                dateStart = dateEnd.Value.AddYears(-1);
+            else
+                dateStart = dateStart.Value.Date;
+
+            var account = _db.GetAccount(accountId);
+            var category = _db.GetCategory(categoryId);
+
+            var data = _db.Transactions.Where(t => t.CategoryId == categoryId)
+                .GroupBy(t => t.Date.Year * 100 + t.Date.Month)
+                .Select(g => new Tuple<int, decimal>(g.Key, g.Sum(t => t.Amount)));
+
+            var stat = new dto.statistics.DateStatistics();
+
+            foreach (var item in data)
+            {
+                stat.Data.Add(item.Item1,
+                    new dto.CurrencyNumber
+                    {
+                        Currency = account.Currency,
+                        Value = item.Item2,
+                    });
+            }
+
+            return stat;
+        }
     }
 }

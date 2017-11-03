@@ -1,0 +1,17 @@
+<template>
+    <div>
+        <h1>Liste des catégories</h1>
+
+        <div v-if="categories != null">
+
+            <ul>
+                <li v-for="cat in categories">
+                    <a :href="getCategoryUrl(cat.id)">{{ cat.name }}</a>
+                </li>
+            </ul>
+        </div>
+        <span v-else>Loading...</span>
+    </div>
+</template>
+
+<script src="./categories.ts"></script>

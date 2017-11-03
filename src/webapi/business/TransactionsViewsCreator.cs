@@ -26,7 +26,7 @@ namespace business
 
             tview.PageCount = (1 + trx.Count()) / itemsPerPage;
 
-            tview.Transactions = trx.OrderBy(t => t.UserDate).ThenBy(t => t.ID)
+            tview.Transactions = trx.OrderBy(t => t.Date).ThenBy(t => t.ID)
                 .Skip(pageId * itemsPerPage)
                 .Take(itemsPerPage)
                 .ConvertToAccountTransactionRow(db);

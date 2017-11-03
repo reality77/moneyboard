@@ -103,20 +103,9 @@ export default class ImportPart extends Vue {
 
     sortDataList() {
 
-        if(this.datalist == null) {
+        if (this.datalist != null)
+            this.datalistsorted = Globals.sortDataList(this.datalist);
+        else
             this.datalistsorted = null;
-            return null;
-        }
-
-        this.datalistsorted = this.datalist.slice();
-        
-        this.datalistsorted.sort((a:any, b:any) => {
-            if(a.name == b.name)
-                return 0;
-            else if(a.name < b.name)
-                return -1;
-            else
-                return 1;
-        });
     }
 }

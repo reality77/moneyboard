@@ -10,8 +10,11 @@ const routes = [
     { path: '/fetchdata', component: require('./components/fetchdata/fetchdata.vue.html') },
     { path: '/accounts', component: require('./components/accounts/accounts.vue.html') },
     { path: '/account_import', component: require('./components/account_import/account_import.vue.html') },
-    { path: '/account_transactions/:id', component: require('./components/account_transactions/account_transactions.vue.html') }
-    { path: '/payee/:id', component: require('./components/payee/payee.vue.html') }
+    { path: '/account_transactions/:id', component: require('./components/account_transactions/account_transactions.vue.html') },
+    { path: '/payees', component: require('./components/payees/payees.vue.html') },
+    { path: '/payees/:id', component: require('./components/payee/payee.vue.html') },
+    { path: '/categories', component: require('./components/categories/categories.vue.html') },
+    { path: '/categories/:id', component: require('./components/category/category.vue.html') },
 ];
 
 new Vue({

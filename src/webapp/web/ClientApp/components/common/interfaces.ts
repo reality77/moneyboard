@@ -19,12 +19,17 @@ interface IAccount {
     balance: ICurrency;
 }
 
-interface IPayee {
+interface IDataIdName {
     id: number;
     name: string;
 }
 
-interface ICategory {
+interface IPayee extends IDataIdName {
+    id: number;
+    name: string;
+}
+
+interface ICategory extends IDataIdName {
     id: number;
     name: string;
 }

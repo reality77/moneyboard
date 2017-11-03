@@ -6,8 +6,8 @@ import { Globals } from '../common/globals';
 
 @Component
 export default class PayeeDetailViewComponent extends Vue {
-    payeeId: number = 0;
-    payee: IPayee|null = null;
+    categoryId: number = 0;
+    category: ICategory|null = null;
     statistics: IDateStatistics = { data: {} };
     itemsPerPage: number = 25;
     pagerIndexes: number[] = [];
@@ -15,18 +15,18 @@ export default class PayeeDetailViewComponent extends Vue {
 
     mounted() {
 
-        this.payeeId = parseInt(this.$route.params.id);
+        this.categoryId = parseInt(this.$route.params.id);
 
-        fetch(Globals.API_URL + '/payees/' + this.payeeId)
-            .then(response => response.json() as Promise<IPayee>)
+        fetch(Globals.API_URL + '/categories/' + this.categoryId)
+            .then(response => response.json() as Promise<ICategory>)
             .then(data => {
-                this.payee = data;
+                this.category = data;
             })
             .catch(error => {
                 console.log(error);
             });
 
-        fetch(Globals.API_URL + '/payees/statisticsbypayee?accountId=1&payeeId=' + this.$route.params.id)
+        fetch(Globals.API_URL + '/categories/statisticsbycategory?accountId=1&categoryId=' + this.$route.params.id)
             .then(response => response.json() as Promise<IDateStatistics>)
             .then(data => {
                 this.statistics = data;
