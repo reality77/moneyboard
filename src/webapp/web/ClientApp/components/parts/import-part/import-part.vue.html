@@ -8,7 +8,7 @@
             <button class="btn btn-default" type="button" v-on:click="createNew()">New</button>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Existing<span class="caret"></span></button>
             <ul class="dropdown-menu">
-                <li v-for="data in datalist"><a v-on:click="selectExisting(data)">{{ data.name }}</a></li>
+                <li v-for="data in datalistsorted"><a v-on:click="selectExisting(data)">{{ data.name }}</a></li>
             </ul>
         </div>
     </div>

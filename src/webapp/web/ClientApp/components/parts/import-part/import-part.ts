@@ -28,6 +28,7 @@ export default class ImportPart extends Vue {
     id:number = -1;
     name:string = "";
     setdefault:boolean = false;
+    datalistsorted: Array<any>|null = null;
 
     @Watch('value')
     onValueChanged(oldValue:any, newValue:any) {
@@ -45,6 +46,11 @@ export default class ImportPart extends Vue {
         }
     }
 
+    @Watch('datalist')
+    onDataListChanged(oldValue:any, newValue:any) {
+        this.sortDataList();
+    }
+
     mounted() {
         this.id = this.value.id;
         this.initialNewName = this.value.name;
@@ -55,7 +61,8 @@ export default class ImportPart extends Vue {
 
         this.name = this.initialNewName;
         this.setdefault = this.value.setdefault;
-    
+        this.sortDataList();
+
         if(this.forcesetdefault)
         {
             if(!this.setdefault) {
@@ -92,5 +99,24 @@ export default class ImportPart extends Vue {
         var val = {id: this.id, name: this.name, setdefault: this.setdefault };
         console.log(val);
         this.$emit('input', val);
+    }
+
+    sortDataList() {
+
+        if(this.datalist == null) {
+            this.datalistsorted = null;
+            return null;
+        }
+
+        this.datalistsorted = this.datalist.slice();
+        
+        this.datalistsorted.sort((a:any, b:any) => {
+            if(a.name == b.name)
+                return 0;
+            else if(a.name < b.name)
+                return -1;
+            else
+                return 1;
+        });
     }
 }
