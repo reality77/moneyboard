@@ -19,29 +19,40 @@
                     <tr>
                         <th>Date</th>
                         <th>Libell&eacute;</th>
-                        <th>Montant</th>
                         <th>Tiers</th>
                         <th>Catégorie</th>
+                        <th>Montant</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- TODO : Create a component to display an imported AccountTransactionRow -->
                     <tr v-for="trx in accounts[0].transactions"> <!-- v-if="isTransactionDisplayed(trx)"-->
                         <td>{{ trx.transactionDate }}</td>
-                        <td>{{ trx.captionOrPayee }}</td>
-                        <td>{{ trx.amount }}</td>
-                        <td v-if="trx.detectedPayeeId == null && trx.detectedPayee != null && unsavedTransactionChanges[trx.importTransactionHash] != null">
+                        <td v-if="trx.detectedPayeeId == null && unsavedTransactionChanges[trx.importTransactionHash] == null">{{ trx.captionOrPayee }}</td>
+                        <td v-if="trx.detectedPayeeId != null">
+                            <span style="font-size:smaller">{{ trx.captionOrPayee }}</span>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Libellé" v-model="trx.detectedCaption"/>
+                            </div>
+                        </td>
+                        <td v-if="trx.detectedPayeeId == null && trx.detectedPayee != null && unsavedTransactionChanges[trx.importTransactionHash] != null" colspan="3">
+                            <span style="font-size:smaller">{{ trx.captionOrPayee }}</span>
                             <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].payeeData" :datalist="payees" placeholder="Tiers" :selectedname="trx.detectedPayee" :forcesetdefault="true"></import-part>
                             <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].categoryData" :datalist="categories" placeholder="Catégorie"></import-part>
                             <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].captionData" placeholder="Libellé" :noid="true"></import-part>
                             <input type="button" @click="onValidateTemporaryChanges(trx)" value="Valider" />
                         </td>
                         <td v-if="trx.detectedPayeeId != null">
-                            <span>{{ displayPayeeName(trx.detectedPayeeId) }}</span>
+                            <select v-model="trx.detectedPayeeId">
+                                <option v-for="payee in payees" :id="payee.id" :value="payee.id">{{payee.name}}</option>
+                            </select>
                         </td>
                         <td v-if="trx.detectedPayeeId != null">
-                            <span>{{ displayCategoryName(trx.detectedCategoryId) }}</span>
+                            <select v-model="trx.detectedCategoryId">
+                                    <option v-for="cat in categories" :id="cat.id" :value="cat.id">{{cat.name}}</option>
+                                </select>
                         </td>
+                        <td>{{ trx.amount }}</td>
                     </tr>
                 </tbody>
             </table>
