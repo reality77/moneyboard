@@ -7,6 +7,7 @@
         <input type="file" @change="onFileChange"/>
         
         <div class="row" v-if="accounts.length > 0">
+            
             <p>
                 <span>{{ accounts[0].transactions.length }} transactions à importer</span>
                 
@@ -29,39 +30,11 @@
                         <td>{{ trx.transactionDate }}</td>
                         <td>{{ trx.captionOrPayee }}</td>
                         <td>{{ trx.amount }}</td>
-                        <td v-if="trx.detectedPayeeId == null && trx.detectedPayee != null" colspan="2">
-                            <div class="input-group">
-                                <!-- PAYEE SELECTION -->
-                                <div>
-                                    <input type="text" class="form-control" placeholder="Enter a payee name" v-model="unsavedTransactionChanges[trx.importTransactionHash].unsavedNewPayeeName">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-default" type="button">Create new</button>
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select existing<span class="caret"></span></button>
-                                        <ul class="dropdown-menu">
-                                            <li v-for="payee in payees"><a v-on:click="selectPayee(trx, payee.id); return false;">{{ payee.name }}</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- CATEGORY SELECTION -->
-                                <div>
-                                    <input type="text" class="form-control" placeholder="Enter a category name" v-model="unsavedTransactionChanges[trx.importTransactionHash].unsavedNewCategoryName">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-default" type="button">Create new</button>
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select existing<span class="caret"></span></button>
-                                        <ul class="dropdown-menu">
-                                            <li v-for="cat in categories"><a v-on:click="selectCategory(trx, cat.id); return false;">{{ cat.name }}</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- CAPTION -->
-                                <div class="input-group">
-                                    <span class="input-group-addon" id="payeerule_caption">Libellé</span>
-                                    <input type="text" class="form-control" placeholder="Libellé par défaut" v-model="unsavedTransactionChanges[trx.importTransactionHash].unsavedNewCaption" aria-describedby="payeerule_caption"/>
-                                </div>
-                                <div>
-                                    <input type="button" @click="onValidateTemporaryChanges(trx)" value="Valider" />
-                                </div>
-                            </div>
+                        <td v-if="trx.detectedPayeeId == null && trx.detectedPayee != null && unsavedTransactionChanges[trx.importTransactionHash] != null">
+                            <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].payeeData" :datalist="payees" placeholder="Tiers" :selectedname="trx.detectedPayee" :forcesetdefault="true"></import-part>
+                            <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].categoryData" :datalist="categories" placeholder="Catégorie"></import-part>
+                            <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].captionData" placeholder="Libellé" :noid="true"></import-part>
+                            <input type="button" @click="onValidateTemporaryChanges(trx)" value="Valider" />
                         </td>
                         <td v-if="trx.detectedPayeeId != null">
                             <span>{{ displayPayeeName(trx.detectedPayeeId) }}</span>

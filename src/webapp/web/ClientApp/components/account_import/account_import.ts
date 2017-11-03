@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Axios from 'axios';
 
 import { Component } from 'vue-property-decorator';
-import { Globals } from '../common/globals';
+import { Globals, ImportPartData } from '../common/globals';
 
 interface IImportedAccount {
     name: string;
@@ -30,14 +30,16 @@ interface IImportedTransaction {
 }
 
 class UnsavedTransactionChanges {
-    unsavedNewPayeeName: string;
-    unsavedNewCategoryName: string;
-    unsavedNewCaption: string;
-    unsavedExistingPayeeId: number;
-    unsavedExistingCategoryId: number;
+    payeeData:ImportPartData;
+    categoryData:ImportPartData;
+    captionData:ImportPartData;
 }
 
-@Component
+@Component({
+    components: {
+        ImportPart: require('../parts/import-part/import-part.vue.html')
+    },
+})
 export default class AccountTransactionsImportComponent extends Vue {
     accounts: IImportedAccount[] = [];
     payees: IPayee[] = [];
@@ -49,6 +51,7 @@ export default class AccountTransactionsImportComponent extends Vue {
             .then(response => response.json() as Promise<IPayee[]>)
             .then(data => {
                 this.payees = data;
+                this.$emit('payees_loaded');
             })
             .catch(error => {
                 console.log(error);
@@ -87,9 +90,22 @@ export default class AccountTransactionsImportComponent extends Vue {
 
                 if(trx.detectedPayeeId == null && trx.detectedPayee != null) {
                     var unsaved = new UnsavedTransactionChanges();
-                    unsaved.unsavedNewPayeeName = trx.detectedPayee;
-                    unsaved.unsavedNewCaption = "";
-                    unsaved.unsavedNewCategoryName = "";
+
+                    unsaved.payeeData = new ImportPartData();
+                    unsaved.payeeData.id = -1;
+                    unsaved.payeeData.name = trx.detectedPayee;
+                    unsaved.payeeData.setdefault = true;
+
+                    unsaved.categoryData = new ImportPartData();
+                    unsaved.categoryData.id = -1;
+                    unsaved.categoryData.name = "";
+                    unsaved.categoryData.setdefault = true;
+
+                    unsaved.captionData = new ImportPartData();
+                    unsaved.captionData.id = -1;
+                    unsaved.captionData.name = "";
+                    unsaved.captionData.setdefault = true;
+
                     this.unsavedTransactionChanges[trx.importTransactionHash] = unsaved;
                 }
             }
@@ -101,6 +117,21 @@ export default class AccountTransactionsImportComponent extends Vue {
 
     // --- Methods for temporary Payee/Category/Caption selection
 
+    /*onUnsavedPayeeChanged(trx:IImportedTransaction) {
+        var unsaved = this.getUnsavedTransactionChanges(trx);
+        console.log("CHANGED PAYEE : " + unsaved.payeeData.id);
+    }
+
+    onUnsavedCategoryChanged(trx:IImportedTransaction) {
+        var unsaved = this.getUnsavedTransactionChanges(trx);
+        console.log("CHANGED CATEGORY : " + unsaved.categoryData.id);
+    }
+
+    onUnsavedCaptionChanged(trx:IImportedTransaction) {
+        var unsaved = this.getUnsavedTransactionChanges(trx);
+        console.log("CHANGED CAPTION : " + unsaved.captionData.name);
+    }*/
+
     onValidateTemporaryChanges(trx:IImportedTransaction) {
         var unsaved = this.getUnsavedTransactionChanges(trx);
 
@@ -109,16 +140,16 @@ export default class AccountTransactionsImportComponent extends Vue {
             return;
         }
 
-        trx.detectedCaption = unsaved.unsavedNewCaption;
+        trx.detectedCaption = unsaved.captionData.name;
         
-        if(unsaved.unsavedExistingPayeeId != null) {
+        if(unsaved.payeeData.id != null && unsaved.payeeData.id >= 0) {
 
-            trx.detectedPayeeId = unsaved.unsavedExistingPayeeId;
+            trx.detectedPayeeId = unsaved.payeeData.id;
             this.validateTemporaryCategory(trx, unsaved);
         }
         else {
             // Create payee
-            Axios.post(Globals.API_URL + '/payees', JSON.stringify(unsaved.unsavedNewPayeeName), {
+            Axios.post(Globals.API_URL + '/payees', JSON.stringify(unsaved.payeeData.name), {
                 headers: {
                     "Content-Type": "application/json;charset=utf-8",
                 }
@@ -129,6 +160,9 @@ export default class AccountTransactionsImportComponent extends Vue {
                 //TODO : add payee in payees variable
                 this.payees = this.payees.concat([data]);
                 trx.detectedPayeeId = data.id;
+                unsaved.payeeData.id = data.id;
+
+                console.log(data);
 
                 this.validateTemporaryCategory(trx, unsaved);
             })
@@ -138,13 +172,13 @@ export default class AccountTransactionsImportComponent extends Vue {
 
     private validateTemporaryCategory(trx:IImportedTransaction, unsaved:UnsavedTransactionChanges) {
 
-        if(unsaved.unsavedExistingCategoryId != null) {
-            trx.detectedCategoryId = unsaved.unsavedExistingCategoryId;
-            this.registerPayeeRule(trx);
+        if(unsaved.categoryData.id != null && unsaved.categoryData.id >= 0) {
+            trx.detectedCategoryId = unsaved.categoryData.id;
+            this.registerPayeeRule(trx, unsaved);
         }
-        else if (unsaved.unsavedNewCategoryName != null && unsaved.unsavedNewCategoryName.trim().length > 0) {
+        else if (unsaved.categoryData.name != null && unsaved.categoryData.name.trim().length > 0) {
             // Create category
-            Axios.post(Globals.API_URL + '/categories', JSON.stringify(unsaved.unsavedNewCategoryName), {
+            Axios.post(Globals.API_URL + '/categories', JSON.stringify(unsaved.categoryData.name), {
                 headers: {
                     "Content-Type": "application/json;charset=utf-8",
                 }
@@ -155,26 +189,34 @@ export default class AccountTransactionsImportComponent extends Vue {
                 //TODO : add category in categories variable
                 this.categories = this.categories.concat([data]);
                 trx.detectedCategoryId = data.id;
+                unsaved.categoryData.id = data.id;
                 
-                this.registerPayeeRule(trx);
+                this.registerPayeeRule(trx, unsaved);
             })
             .catch(error => alert(error));
         }
         else {
-            this.registerPayeeRule(trx);
+            this.registerPayeeRule(trx, unsaved);
         }
     }
 
-    private registerPayeeRule(trx:IImportedTransaction) {
+    private registerPayeeRule(trx:IImportedTransaction, unsaved:UnsavedTransactionChanges) {
         
+        if(!unsaved.payeeData.setdefault && !unsaved.categoryData.setdefault && !unsaved.captionData.setdefault)
+            return;
+
+        console.log(unsaved);
+
         // Create payee rule
         var payeeRule = {
             regexId: trx.detectedRegexId,
             importedCaption: trx.detectedPayee,
             payeeId: trx.detectedPayeeId,
-            categoryId: trx.detectedCategoryId,
-            transactionCaption: trx.detectedCaption
+            categoryId: (unsaved.categoryData.setdefault ? trx.detectedCategoryId : null),
+            transactionCaption: (unsaved.captionData.setdefault ? trx.detectedCaption : null)
         };
+
+        console.log(payeeRule);
 
         Axios.post(Globals.API_URL + '/import/registerpayeerule', JSON.stringify(payeeRule), {
             headers: {
@@ -183,20 +225,23 @@ export default class AccountTransactionsImportComponent extends Vue {
         })
         .then(response => 
         {
-            this.refreshTransactions(trx.detectedPayee, trx.detectedPayeeId, trx.detectedCategoryId, trx.detectedCaption);
+            this.refreshTransactions(trx.detectedPayee, payeeRule.payeeId, payeeRule.categoryId, payeeRule.transactionCaption);
         })
         .catch(error => alert(error));
     }
 
-    private refreshTransactions(detectedPayee:string, payeeId:number, categoryId:number, caption:string) {
+    private refreshTransactions(detectedPayee:string, payeeId:number, categoryId:number|null, caption:string|null) {
         
         for(var i=0; i < this.accounts[0].transactions.length; i++) {
             var trx = this.accounts[0].transactions[i];
 
             if(trx.detectedPayee === detectedPayee) {
                 trx.detectedPayeeId = payeeId;
-                trx.detectedCategoryId = categoryId;
-                trx.detectedCaption = caption;
+                if(categoryId != null)
+                    trx.detectedCategoryId = categoryId;
+                
+                if(caption != null)
+                    trx.detectedCaption = caption;
             }
         }
     }
@@ -229,12 +274,12 @@ export default class AccountTransactionsImportComponent extends Vue {
 
     selectPayee(trx: IImportedTransaction, payeeId: number) {
         var unsaved = this.getUnsavedTransactionChanges(trx);
-        unsaved.unsavedExistingPayeeId = payeeId;
+        unsaved.payeeData.id = payeeId;
     }
 
     selectCategory(trx: IImportedTransaction, categoryId: number) {
         var unsaved = this.getUnsavedTransactionChanges(trx);
-        unsaved.unsavedExistingCategoryId = categoryId;
+        unsaved.categoryData.id = categoryId;
     }
 
     displayPayeeName(payeeId: number) : string {
