@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h1>Comptes</h1>
+        <h1>Transactions du compte {{account.name}}</h1>
 
-        <p>R�sum� des comptes</p>
+        <p>R&eacute;sum&eacute; des transactions</p>
 
         <ul class="pagination">
             <li v-bind:class="{'disabled':(transactionsview.pageId === 0)}"><a style="cursor:pointer" v-on:click="paginate(transactionsview.pageId - 1)">&laquo;</a></li>

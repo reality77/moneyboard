@@ -10,7 +10,7 @@ const routes = [
     { path: '/fetchdata', component: require('./components/fetchdata/fetchdata.vue.html') },
     { path: '/accounts', component: require('./components/accounts/accounts.vue.html') },
     { path: '/account_import', component: require('./components/account_import/account_import.vue.html') },
-    { path: '/account_transactions', component: require('./components/account_transactions/account_transactions.vue.html') }
+    { path: '/account_transactions/:id', component: require('./components/account_transactions/account_transactions.vue.html') }
 ];
 
 new Vue({

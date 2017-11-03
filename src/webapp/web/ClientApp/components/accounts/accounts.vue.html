@@ -2,9 +2,9 @@
     <div>
         <h1>Comptes</h1>
 
-        <p>Résumé des comptes</p>
+        <p>R&eacute;sum&eacute; des comptes</p>
 
-        <table v-if="accounts.length" class="table">
+        <table v-if="accounts != null" class="table">
             <thead>
                 <tr>
                     <th>Nom</th>
@@ -13,13 +13,15 @@
             </thead>
             <tbody>
                 <tr v-for="acc in accounts">
-                    <td>{{ acc.name }}</td>
+                    <td><a v-bind:href="getTransactionsLink(acc.id)">{{ acc.name }}</a></td>
                     <td>{{ acc.balance.value }} {{ acc.balance.currency }}</td>
                 </tr>
             </tbody>
         </table>
 
         <p v-else><em>Loading...</em></p>
+        
+        </div>
     </div>
 </template>
 

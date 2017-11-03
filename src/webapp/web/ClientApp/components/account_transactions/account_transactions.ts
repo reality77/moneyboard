@@ -6,12 +6,27 @@ import { Globals } from '../common/globals';
 
 @Component
 export default class TransactionsViewComponent extends Vue {
+    routeAccountId: string = "";
+    account: IAccount = { id: 0, name: "", currency: "Unknown", initialBalance: { currency: "Unknown", value: 0 }, balance: { currency: "Unknown", value: 0 } }
     transactionsview: ITransactionsView = { pageId: 0, pageCount: 1, transactions: [] };
     itemsPerPage: number = 25;
     pagerIndexes: number[] = [];
     pagerMaxPages: number = 5;
 
     mounted() {
+
+        var routeAccountId =  this.$route.params.id;
+
+        fetch(Globals.API_URL + '/accounts/' + routeAccountId)
+            .then(response => response.json() as Promise<IAccount>)
+            .then(data => {
+                this.account = data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+
         this.paginate(0);
     }
 
@@ -20,7 +35,7 @@ export default class TransactionsViewComponent extends Vue {
         if (pageId < 0 || pageId >= this.transactionsview.pageCount)
             return;
 
-        fetch(Globals.API_URL + '/transactions_view/account/1?pageId=' + pageId + '&itemsPerPage=' + this.itemsPerPage)
+        fetch(Globals.API_URL + '/transactions_view/account/' + this.$route.params.id + '?pageId=' + pageId + '&itemsPerPage=' + this.itemsPerPage)
             .then(response => response.json() as Promise<ITransactionsView>)
             .then(data => {
                 this.transactionsview = data;
