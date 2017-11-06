@@ -82,4 +82,21 @@ export default class TransactionsViewComponent extends Vue {
             return "";
         return date.toLocaleDateString();
     }
+
+    getFormattedType(type:ETransactionType) : string {
+        switch(type) {
+            case 0:
+                return "?";
+            case 1:
+                return "Paiement";
+            case 2:
+                return "Virement";
+            case 3:
+                return "Retrait";
+            case 4:
+                return "Prélèvement";
+            default:
+                return type.toString();        
+        }
+    }
 }

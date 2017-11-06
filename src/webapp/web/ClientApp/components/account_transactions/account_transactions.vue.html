@@ -26,15 +26,19 @@
             </thead>
             <tbody>
                 <tr v-for="trx in transactionsview.transactions">
-                    <td>{{ getFormattedDate(trx.transaction.date) }}</td>
-                    <td>{{ trx.transaction.type }}</td>
-                    <td>{{ trx.transaction.caption }}</td>
+                    <td>{{ getFormattedDate(trx.transaction.date) }}
+                        <br/>
+                        <span v-if="trx.transaction.userDate != null" style="font-size:smaller">{{ getFormattedDate(trx.transaction.userDate) }}</span>
+                    </td>
+                    <td>{{ getFormattedType(trx.transaction.type) }}</td>
+                    <td>{{ trx.transaction.caption }}
+                        <br/>
+                        <span style="font-size:smaller">{{ trx.comment }}</span>
+                    </td>
                     <td>{{ trx.transaction.payeeName }}</td>
                     <td>{{ trx.transaction.categoryName }}</td>
                     <td>{{ trx.transaction.amount.value }} {{ trx.transaction.amount.currency }}</td>
                     <td>{{ trx.balance.value }} {{ trx.balance.currency }}</td>
-                    <td>{{ getFormattedDate(trx.transaction.userDate) }}</td>
-                    <td>{{ trx.comment }}</td>
                     <td>{{ trx.importedTransactionCaption }}</td>
                     <td>{{ trx.importedTransactionHash }}</td>
                 </tr>
