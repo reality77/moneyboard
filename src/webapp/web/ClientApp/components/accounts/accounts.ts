@@ -1,8 +1,7 @@
-/// <reference path='../common/interfaces.ts'/>
-
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Globals } from '../common/globals';
+import { IAccount } from '../common/interfaces';
 
 @Component
 export default class AccountsComponent extends Vue {

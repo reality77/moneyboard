@@ -8,6 +8,8 @@ namespace dto.import
     {
         public string Name { get; set; }
 
+        public ECurrency Currency { get; set; }
+
         public List<ImportedTransaction> Transactions { get; set; }
 
         public ImportedAccount()

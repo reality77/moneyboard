@@ -1,13 +1,13 @@
-/// <reference path='../common/interfaces.ts'/>
-
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
+import { ECurrency, ETransactionType } from '../common/enums';
 import { Globals } from '../common/globals';
+import { IAccount, ITransactionsView } from '../common/interfaces';
 
 @Component
 export default class TransactionsViewComponent extends Vue {
     routeAccountId: string = "";
-    account: IAccount = { id: 0, name: "", currency: "Unknown", initialBalance: { currency: "Unknown", value: 0 }, balance: { currency: "Unknown", value: 0 } }
+    account: IAccount = { id: 0, name: "", currency: ECurrency.Unknown, initialBalance: { currency: ECurrency.Unknown, value: 0 }, balance: { currency: ECurrency.Unknown, value: 0 } }
     transactionsview: ITransactionsView = { pageId: 0, pageCount: 1, transactions: [] };
     itemsPerPage: number = 25;
     pagerIndexes: number[] = [];

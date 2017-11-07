@@ -1,52 +1,46 @@
-enum ETransactionType {
-    Unknown = 0,
-    Payment = 1,
-    Transfer = 2,
-    Withdrawal = 3,
-    Debit = 4
-}
+import { ECurrency, ETransactionType } from '../common/enums'
 
-interface ICurrency {
-    currency: string;
+export interface ICurrency {
+    currency: ECurrency;
     value: number;
 }
 
-interface IAccount {
+export interface IAccount {
     id: number;
     name: string;
-    currency: string;
+    currency: ECurrency;
     initialBalance: ICurrency;
     balance: ICurrency;
 }
 
-interface IDataIdName {
+export interface IDataIdName {
     id: number;
     name: string;
 }
 
-interface IPayee extends IDataIdName {
+export interface IPayee extends IDataIdName {
     id: number;
     name: string;
 }
 
-interface ICategory extends IDataIdName {
+export interface ICategory extends IDataIdName {
     id: number;
     name: string;
 }
 
-interface ITransactionsView {
+export interface ITransactionsView {
     pageId: number,
     pageCount: number;
     transactions: ITransactionRow[]; 
 }
 
-interface ITransactionRow {
+export interface ITransactionRow {
     rowId: number;
     balance: ICurrency;
     transaction: ITransaction;
 }
 
-interface ITransaction {
+export interface ITransaction {
     id: number;
     accountId: number;
     accountName: string;
@@ -64,6 +58,6 @@ interface ITransaction {
     importedTransactionHash: string;
 }
 
-interface IDateStatistics {
+export interface IDateStatistics {
     data: { [key: number]: ICurrency; }; 
 }

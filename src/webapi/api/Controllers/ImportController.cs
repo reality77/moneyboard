@@ -111,7 +111,8 @@ namespace api.Controllers
                     {
                         account = new dal.models.Account
                         {
-                            Name = importedAccount.Name
+                            Name = importedAccount.Name,
+                            Currency = importedAccount.Currency,
                         };
 
                         _db.Accounts.Add(account);

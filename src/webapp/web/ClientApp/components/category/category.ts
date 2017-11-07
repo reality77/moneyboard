@@ -3,9 +3,10 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Globals } from '../common/globals';
+import { ICategory, IDateStatistics } from '../common/interfaces';
 
 @Component
-export default class PayeeDetailViewComponent extends Vue {
+export default class CategoryDetailViewComponent extends Vue {
     categoryId: number = 0;
     category: ICategory|null = null;
     statistics: IDateStatistics = { data: {} };

@@ -2,10 +2,13 @@ import Vue from 'vue';
 import Axios from 'axios';
 
 import { Component } from 'vue-property-decorator';
+import { ECurrency } from '../common/enums';
 import { Globals, ImportPartData } from '../common/globals';
+import { IAccount, IPayee, ICategory } from '../common/interfaces';
 
 interface IImportedAccount {
     name: string;
+    currency: ECurrency;
     transactions: IImportedTransaction[];
 }
 
@@ -41,17 +44,21 @@ class UnsavedTransactionChanges {
     },
 })
 export default class AccountTransactionsImportComponent extends Vue {
-    accounts: IImportedAccount[] = [];
+    
+    importedAccounts: IImportedAccount[] = [];
+
+    accounts: IAccount[] = [];
     payees: IPayee[] = [];
     categories: ICategory[] = [];
     unsavedTransactionChanges: { [key:string]:UnsavedTransactionChanges; } = {}
+
+    targetAccountData: ImportPartData = { id: -1, name: "", setdefault: false };
 
     mounted() {
         fetch(Globals.API_URL + '/payees')
             .then(response => response.json() as Promise<IPayee[]>)
             .then(data => {
                 this.payees = data;
-                this.$emit('payees_loaded');
             })
             .catch(error => {
                 console.log(error);
@@ -61,6 +68,15 @@ export default class AccountTransactionsImportComponent extends Vue {
             .then(response => response.json() as Promise<ICategory[]>)
             .then(data => {
                 this.categories = data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        fetch(Globals.API_URL + '/accounts')
+            .then(response => response.json() as Promise<IAccount[]>)
+            .then(data => {
+                this.accounts = data;
             })
             .catch(error => {
                 console.log(error);
@@ -110,27 +126,12 @@ export default class AccountTransactionsImportComponent extends Vue {
                 }
             }
 
-             this.accounts = data; 
+             this.importedAccounts = data; 
         })
         .catch(error => console.log(error));
     };
 
     // --- Methods for temporary Payee/Category/Caption selection
-
-    /*onUnsavedPayeeChanged(trx:IImportedTransaction) {
-        var unsaved = this.getUnsavedTransactionChanges(trx);
-        console.log("CHANGED PAYEE : " + unsaved.payeeData.id);
-    }
-
-    onUnsavedCategoryChanged(trx:IImportedTransaction) {
-        var unsaved = this.getUnsavedTransactionChanges(trx);
-        console.log("CHANGED CATEGORY : " + unsaved.categoryData.id);
-    }
-
-    onUnsavedCaptionChanged(trx:IImportedTransaction) {
-        var unsaved = this.getUnsavedTransactionChanges(trx);
-        console.log("CHANGED CAPTION : " + unsaved.captionData.name);
-    }*/
 
     onValidateTemporaryChanges(trx:IImportedTransaction) {
         var unsaved = this.getUnsavedTransactionChanges(trx);
@@ -232,8 +233,8 @@ export default class AccountTransactionsImportComponent extends Vue {
 
     private refreshTransactions(detectedPayee:string, payeeId:number, categoryId:number|null, caption:string|null) {
         
-        for(var i=0; i < this.accounts[0].transactions.length; i++) {
-            var trx = this.accounts[0].transactions[i];
+        for(var i=0; i < this.importedAccounts[0].transactions.length; i++) {
+            var trx = this.importedAccounts[0].transactions[i];
 
             if(trx.detectedPayee === detectedPayee) {
                 trx.detectedPayeeId = payeeId;
@@ -253,7 +254,10 @@ export default class AccountTransactionsImportComponent extends Vue {
     }
 
     // --- Upload transactions
-    uploadTransactions(acc: IAccount) {
+    uploadTransactions(acc: IImportedAccount) {
+
+        acc.name = this.targetAccountData.name;
+        acc.currency = 1;
 
         Axios.post(Globals.API_URL + '/import/uploadtoaccount', JSON.stringify(acc), {
             headers: {

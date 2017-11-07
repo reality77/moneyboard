@@ -6,13 +6,15 @@
 
         <input type="file" @change="onFileChange"/>
         
-        <div class="row" v-if="accounts.length > 0">
+        <div class="row" v-if="importedAccounts.length > 0">
             
             <p>
-                <span>{{ accounts[0].transactions.length }} transactions à importer</span>
+                <span>{{ importedAccounts[0].transactions.length }} transactions à importer</span>
                 
-                <input type="text" class="form-control" placeholder="Enter an account name" v-model="accounts[0].name">
-                <button v-on:click="uploadTransactions(accounts[0])">Importer les transactions</button>
+                <import-part v-model="targetAccountData" :datalist="accounts" placeholder="Nom du compte de destination"></import-part>
+
+                <input type="text" class="form-control" placeholder="Enter an account name" v-model="importedAccounts[0].name">
+                <button v-on:click="uploadTransactions(importedAccounts[0])">Importer les transactions</button>
             </p>
             <table class="table">
                 <thead>
@@ -26,7 +28,7 @@
                 </thead>
                 <tbody>
                     <!-- TODO : Create a component to display an imported AccountTransactionRow -->
-                    <tr v-for="trx in accounts[0].transactions"> <!-- v-if="isTransactionDisplayed(trx)"-->
+                    <tr v-for="trx in importedAccounts[0].transactions"> <!-- v-if="isTransactionDisplayed(trx)"-->
                         <td>{{ trx.transactionDate }}</td>
                         <td v-if="trx.detectedPayeeId == null && unsavedTransactionChanges[trx.importTransactionHash] == null">{{ trx.captionOrPayee }}</td>
                         <td v-if="trx.detectedPayeeId != null">

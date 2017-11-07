@@ -1,13 +1,12 @@
-/// <reference path='../common/interfaces.ts'/>
 
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Globals } from '../common/globals';
+import { ICategory } from '../common/interfaces';
 
 @Component
 export default class PayeeViewComponent extends Vue {
     categories: ICategory[] = [];
-    statistics: IDateStatistics = { data: {} };
     itemsPerPage: number = 25;
     pagerIndexes: number[] = [];
     pagerMaxPages: number = 5;

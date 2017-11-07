@@ -53,6 +53,48 @@ namespace dal_postgres.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("dal.models.ImportPayeeSelection", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("CategoryId");
+
+                    b.Property<int>("ImportRegexId");
+
+                    b.Property<string>("ImportedCaption")
+                        .IsRequired();
+
+                    b.Property<int>("PayeeId");
+
+                    b.Property<string>("TransactionCaption");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ImportRegexId");
+
+                    b.HasIndex("PayeeId");
+
+                    b.ToTable("ImportPayeeSelections");
+                });
+
+            modelBuilder.Entity("dal.models.ImportRegex", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("RegexString")
+                        .IsRequired();
+
+                    b.Property<int>("TransactionType");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("ImportRegexes");
+                });
+
             modelBuilder.Entity("dal.models.Payee", b =>
                 {
                     b.Property<int>("ID")
@@ -71,45 +113,70 @@ namespace dal_postgres.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AccountID");
+                    b.Property<int>("AccountId");
 
                     b.Property<decimal>("Amount");
 
                     b.Property<string>("Caption");
 
-                    b.Property<int?>("CategoryID");
+                    b.Property<int?>("CategoryId");
 
-                    b.Property<int?>("PayeeID");
+                    b.Property<string>("Comment");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<string>("ImportedTransactionCaption");
+
+                    b.Property<string>("ImportedTransactionHash");
+
+                    b.Property<int?>("PayeeId");
 
                     b.Property<int>("Type");
 
-                    b.Property<DateTime>("UserDate");
+                    b.Property<DateTime?>("UserDate");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("AccountID");
+                    b.HasIndex("AccountId");
 
-                    b.HasIndex("CategoryID");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex("PayeeID");
+                    b.HasIndex("PayeeId");
 
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("dal.models.ImportPayeeSelection", b =>
+                {
+                    b.HasOne("dal.models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("dal.models.ImportRegex", "ImportRegex")
+                        .WithMany("ImportPayeeSelections")
+                        .HasForeignKey("ImportRegexId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("dal.models.Payee", "Payee")
+                        .WithMany()
+                        .HasForeignKey("PayeeId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("dal.models.Transaction", b =>
                 {
                     b.HasOne("dal.models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountID")
+                        .WithMany("Transactions")
+                        .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("dal.models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryID");
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("dal.models.Payee", "Payee")
                         .WithMany()
-                        .HasForeignKey("PayeeID");
+                        .HasForeignKey("PayeeId");
                 });
 #pragma warning restore 612, 618
         }
