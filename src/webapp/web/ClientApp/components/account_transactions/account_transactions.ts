@@ -2,13 +2,27 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { ECurrency, ETransactionType } from '../common/enums';
 import { Globals } from '../common/globals';
-import { IAccount, ITransactionsView } from '../common/interfaces';
+import { IAccount, ITransactionsView, ITransactionRow, ICategory, IPayee } from '../common/interfaces';
+
+interface IEditableTransactionsViewModel extends ITransactionsView {
+    transactions: IEditableTransactionRowModel[]; 
+}
+
+export interface IEditableTransactionRowModel extends ITransactionRow {
+    isEditable: boolean;
+}
 
 @Component
 export default class TransactionsViewComponent extends Vue {
     routeAccountId: string = "";
+    
+    // *** Server data
     account: IAccount = { id: 0, name: "", currency: ECurrency.Unknown, initialBalance: { currency: ECurrency.Unknown, value: 0 }, balance: { currency: ECurrency.Unknown, value: 0 } }
-    transactionsview: ITransactionsView = { pageId: 0, pageCount: 1, transactions: [] };
+    categories: ICategory[] = [];
+    payees: IPayee[] = [];
+    transactionsview: IEditableTransactionsViewModel = { pageId: 0, pageCount: 1, transactions: [] };
+    
+    // *** Pagination data
     itemsPerPage: number = 25;
     pagerIndexes: number[] = [];
     pagerMaxPages: number = 5;
@@ -26,6 +40,23 @@ export default class TransactionsViewComponent extends Vue {
                 console.log(error);
             });
 
+        fetch(Globals.API_URL + '/categories')
+            .then(response => response.json() as Promise<ICategory[]>)
+            .then(data => {
+                this.categories = Globals.sortDataList(data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        fetch(Globals.API_URL + '/payees')
+            .then(response => response.json() as Promise<IPayee[]>)
+            .then(data => {
+                this.payees = Globals.sortDataList(data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
 
         this.paginate(0);
     }
@@ -36,22 +67,23 @@ export default class TransactionsViewComponent extends Vue {
             return;
 
         fetch(Globals.API_URL + '/transactions_view/account/' + this.$route.params.id + '?pageId=' + pageId + '&itemsPerPage=' + this.itemsPerPage)
-            .then(response => response.json() as Promise<ITransactionsView>)
+            .then(response => response.json() as Promise<IEditableTransactionsViewModel>)
             .then(data => {
-
-                this.transactionsview = data;
 
                 // --- Javascript deserialization issue : Dates are deserialized as strings
                 // Workaround : We rebuild the dates manually
-                this.transactionsview.transactions.forEach(trx => {
+                data.transactions.forEach(trx => {
                     trx.transaction.date = new Date(trx.transaction.date);
 
                     if(trx.transaction.userDate != null)
                         trx.transaction.userDate = new Date(trx.transaction.userDate);
-                });
-                // ---
 
-                console.log(JSON.stringify(this.transactionsview.transactions[0].transaction));
+                    trx.isEditable = false;;
+                });
+
+                this.transactionsview = data;
+                
+                // --- Pager
 
                 var min = pageId - 2;
 

@@ -15,6 +15,7 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Date</th>
                     <th>Type</th>
                     <th>Libell&eacute;</th>
@@ -26,15 +27,25 @@
             </thead>
             <tbody>
                 <tr v-for="trx in transactionsview.transactions">
+                    <td>
+                        <input type="checkbox" v-model="trx.isEditable" title="Modifier"/>
+                    </td>
+
                     <td>{{ getFormattedDate(trx.transaction.date) }}
                         <br/>
                         <span v-if="trx.transaction.userDate != null" style="font-size:smaller">{{ getFormattedDate(trx.transaction.userDate) }}</span>
                     </td>
+
                     <td>{{ getFormattedType(trx.transaction.type) }}</td>
-                    <td>{{ trx.transaction.caption }}
+
+                    <td v-if="trx.isEditable">
+                        <input type="text" v-model="trx.transaction.caption"/>
+                    </td>
+                    <td v-else>{{ trx.transaction.caption }}
                         <br/>
                         <span style="font-size:smaller">{{ trx.comment }}</span>
                     </td>
+
                     <td>{{ trx.transaction.payeeName }}</td>
                     <td>{{ trx.transaction.categoryName }}</td>
                     <td>{{ trx.transaction.amount.value }} {{ trx.transaction.amount.currency }}</td>
