@@ -22,5 +22,8 @@ Lancer un container : cela va créé un user `webapi` et une base de données du
 
 Et lancer le site en debug
 
+## Lancer des commandes SQL dans le container
+
+`docker exec -it appdb psql -U webapi -W moneyboard`
 
 

@@ -38,6 +38,7 @@ export default class TransactionsViewComponent extends Vue {
         fetch(Globals.API_URL + '/transactions_view/account/' + this.$route.params.id + '?pageId=' + pageId + '&itemsPerPage=' + this.itemsPerPage)
             .then(response => response.json() as Promise<ITransactionsView>)
             .then(data => {
+
                 this.transactionsview = data;
 
                 // --- Javascript deserialization issue : Dates are deserialized as strings
@@ -49,6 +50,8 @@ export default class TransactionsViewComponent extends Vue {
                         trx.transaction.userDate = new Date(trx.transaction.userDate);
                 });
                 // ---
+
+                console.log(JSON.stringify(this.transactionsview.transactions[0].transaction));
 
                 var min = pageId - 2;
 
