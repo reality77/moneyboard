@@ -51,8 +51,8 @@
                         </td>
                         <td v-if="trx.detectedPayeeId != null">
                             <select v-model="trx.detectedCategoryId">
-                                    <option v-for="cat in categories" :id="cat.id" :value="cat.id">{{cat.name}}</option>
-                                </select>
+                                <option v-for="cat in categories" :id="cat.id" :value="cat.id">{{cat.name}}</option>
+                            </select>
                         </td>
                         <td>{{ trx.amount }}</td>
                     </tr>
