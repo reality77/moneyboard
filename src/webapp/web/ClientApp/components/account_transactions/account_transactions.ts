@@ -134,4 +134,8 @@ export default class TransactionsViewComponent extends Vue {
                 return type.toString();        
         }
     }
+
+    toggleEditable(trx:IEditableTransactionRowModel) {
+        trx.isEditable = !trx.isEditable;
+    }
 }

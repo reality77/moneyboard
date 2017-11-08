@@ -28,7 +28,12 @@
             <tbody>
                 <tr v-for="trx in transactionsview.transactions">
                     <td>
-                        <input type="checkbox" v-model="trx.isEditable" title="Modifier"/>
+                        <button v-if="!trx.isEditable" type="button" class="btn btn-default" aria-label="Left Align" @click="toggleEditable(trx)">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Modifier
+                        </button>
+                        <button v-else type="button" class="btn btn-default" aria-label="Left Align" @click="toggleEditable(trx)">
+                            <span class="glyphicon glyphicon-edit blue" aria-hidden="true"></span> Fermer
+                        </button>
                     </td>
 
                     <td>{{ getFormattedDate(trx.transaction.date) }}
