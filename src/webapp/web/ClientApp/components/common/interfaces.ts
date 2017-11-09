@@ -59,5 +59,5 @@ export interface ITransaction {
 }
 
 export interface IDateStatistics {
-    data: { [key: number]: ICurrency; }; 
+    data: { [key: string]: ICurrency; }; 
 }

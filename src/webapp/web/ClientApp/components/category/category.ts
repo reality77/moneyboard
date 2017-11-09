@@ -27,7 +27,7 @@ export default class CategoryDetailViewComponent extends Vue {
                 console.log(error);
             });
 
-        fetch(Globals.API_URL + '/categories/statisticsbycategory?accountId=1&categoryId=' + this.$route.params.id)
+        fetch(Globals.API_URL + '/statistics/monthly?accountId=1&idOrigin=' + this.$route.params.id + '&origin=Category')
             .then(response => response.json() as Promise<IDateStatistics>)
             .then(data => {
                 this.statistics = data;
@@ -37,12 +37,8 @@ export default class CategoryDetailViewComponent extends Vue {
             });
     }
 
-    getDate(statdate: number): string {
+    getDate(statdate: string): string {
         console.log(statdate);
-        var year = Math.floor(statdate / 100);
-        console.log(year);
-        var month = statdate - year * 100;
-        console.log(month);
-        return (new Date(year, month - 1)).toLocaleDateString();
+        return Globals.formatDateMonthYear(new Date(statdate));
     }
 }

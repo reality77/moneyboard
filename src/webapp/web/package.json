@@ -8,7 +8,6 @@
     "awesome-typescript-loader": "^3.0.0",
     "axios": "^0.17.0",
     "bootstrap": "^3.3.6",
-    "c3.js": "^1.0.0",
     "css-loader": "^0.25.0",
     "event-source-polyfill": "^0.0.7",
     "extract-text-webpack-plugin": "^2.0.0-rc",

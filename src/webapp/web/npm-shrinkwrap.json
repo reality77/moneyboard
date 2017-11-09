@@ -422,12 +422,6 @@
       "integrity": "sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=",
       "dev": true
     },
-    "c3.js": {
-      "version": "1.0.0",
-      "resolved": "https://registry.npmjs.org/c3.js/-/c3.js-1.0.0.tgz",
-      "integrity": "sha1-chE2bvdnkZAlOYaGAUVnBI70lOY=",
-      "dev": true
-    },
     "camelcase": {
       "version": "1.2.1",
       "resolved": "https://registry.npmjs.org/camelcase/-/camelcase-1.2.1.tgz",

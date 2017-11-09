@@ -7,12 +7,11 @@ namespace dto.statistics
 {
     public class DateStatistics
     {
-        public IDictionary<int, CurrencyNumber> Data { get; set; }
+        public IDictionary<DateTime, CurrencyNumber> Data { get; set; }
 
         public DateStatistics()
         {
-            this.Data = new Dictionary<int, CurrencyNumber>();
+            this.Data = new Dictionary<DateTime, CurrencyNumber>();
         }
-
     }
 }
