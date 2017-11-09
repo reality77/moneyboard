@@ -1,64 +1,91 @@
 <template>
-    <div>
+    <div class="row">
         <h1>Importer</h1>
 
         <p>Importer des transactions</p>
 
-        <input type="file" @change="onFileChange"/>
-        
-        <div class="row" v-if="importedAccounts.length > 0">
-            
-            <p>
-                <span>{{ importedAccounts[0].transactions.length }} transactions à importer</span>
-                
-                <import-part v-model="targetAccountData" :datalist="accounts" placeholder="Nom du compte de destination"></import-part>
+        <div v-if="infoMessage != null" class="col-sm-12 alert alert-info">
+            <p><span v-model="infoMessage"></span></p>
+        </div>
 
-                <input type="text" class="form-control" placeholder="Enter an account name" v-model="importedAccounts[0].name">
-                <button v-on:click="uploadTransactions(importedAccounts[0])">Importer les transactions</button>
-            </p>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Libell&eacute;</th>
-                        <th>Tiers</th>
-                        <th>Catégorie</th>
-                        <th>Montant</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- TODO : Create a component to display an imported AccountTransactionRow -->
-                    <tr v-for="trx in importedAccounts[0].transactions"> <!-- v-if="isTransactionDisplayed(trx)"-->
-                        <td>{{ trx.transactionDate }}</td>
-                        <td v-if="displayPayeeRuleCreationPanel(trx)" colspan="3">
-                            <span style="font-size:smaller">{{ trx.captionOrPayee }}</span>
-                            <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].payeeData" :datalist="payees" placeholder="Tiers" :selectedname="trx.detectedPayee" :forcesetdefault="true"></import-part>
-                            <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].categoryData" :datalist="categories" placeholder="Catégorie"></import-part>
-                            <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].captionData" placeholder="Libellé" :noid="true"></import-part>
-                            <input type="button" @click="onValidateTemporaryChanges(trx)" value="Valider" />
-                        </td>
-                        <td v-else>
-                            <span style="font-size:smaller">{{ trx.captionOrPayee }}</span>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Libellé" v-model="trx.detectedCaption"/>
-                            </div>
-                        </td>
-                        <td v-if="!displayPayeeRuleCreationPanel(trx)">
-                            <select v-model="trx.detectedPayeeId">
-                                <option :id="null" :value="null"></option>
-                                <option v-for="payee in payees" :id="payee.id" :value="payee.id">{{payee.name}}</option>
-                            </select>
-                        </td>
-                        <td v-if="!displayPayeeRuleCreationPanel(trx)">
-                            <select v-model="trx.detectedCategoryId">
-                                <option :id="null" :value="null"></option>
-                                <option v-for="cat in categories" :id="cat.id" :value="cat.id">{{cat.name}}</option>
-                            </select>
-                        </td>
-                        <td>{{ trx.amount }}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div v-if="selectedAccount == null" class="col-sm-12">
+            <span class="col-sm-3" style="text-align:right">Compte destination :</span>
+            <div class="col-sm-9">
+                <import-part v-model="targetAccountData" :datalist="accounts" placeholder="Nom du compte de destination"></import-part>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3">
+                <button v-on:click="setSelectedAccount()">Définir le compte de destination</button>
+            </div>
+        </div>
+        <div v-else class="col-sm-12">
+            
+            <div class="col-sm-12">
+                <span class="col-sm-3" style="text-align:right">Compte destination :</span>
+                <span class="col-sm-9" style="font-weight:bold">{{ selectedAccount.name }}</span>
+            </div>
+
+            <div class="col-sm-12">
+                <span class="col-sm-3" style="text-align:right">Fichier à importer :</span>
+                <div class="col-sm-9"><input type="file" @change="onFileChange"/></div>
+            </div>
+            
+            <div v-if="importedAccounts.length > 0" class="col-sm-12">
+                <br/>
+                <p>
+                    <button v-on:click="selectAll()" class="btn btn-default"><i class="glyphicon glyphicon-check"></i></button>
+                    <button v-on:click="unselectAll()" class="btn btn-default"><i class="glyphicon glyphicon-unchecked"></i></button>
+
+                    <span>{{ importedAccounts[0].transactions.length }} transactions à importer</span> 
+                    <button v-on:click="uploadTransactions(importedAccounts[0])">Importer les transactions sélectionnées</button>
+                </p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Date</th>
+                            <th>Libell&eacute;</th>
+                            <th>Tiers</th>
+                            <th>Catégorie</th>
+                            <th>Montant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- TODO : Create a component to display an imported AccountTransactionRow -->
+                        <tr v-for="trx in importedAccounts[0].transactions"> <!-- v-if="isTransactionDisplayed(trx)"-->
+                            <td>
+                                <input type="checkbox" v-model="trx.selectedForUpload" value="Valider" />
+                            </td>
+                            <td>{{ trx.transactionDate }}</td>
+                            <td v-if="displayPayeeRuleCreationPanel(trx)" colspan="3">
+                                <span style="font-size:smaller">{{ trx.captionOrPayee }}</span>
+                                <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].payeeData" :datalist="payees" placeholder="Tiers" :selectedname="trx.detectedPayee" :forcesetdefault="true"></import-part>
+                                <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].categoryData" :datalist="categories" placeholder="Catégorie"></import-part>
+                                <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].captionData" placeholder="Libellé" :noid="true"></import-part>
+                                <input type="button" @click="onValidateTemporaryChanges(trx)" value="Valider" />
+                            </td>
+                            <td v-else>
+                                <span style="font-size:smaller">{{ trx.captionOrPayee }}</span>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Libellé" v-model="trx.detectedCaption"/>
+                                </div>
+                            </td>
+                            <td v-if="!displayPayeeRuleCreationPanel(trx)">
+                                <select v-model="trx.detectedPayeeId">
+                                    <option :id="null" :value="null"></option>
+                                    <option v-for="payee in payees" :id="payee.id" :value="payee.id">{{payee.name}}</option>
+                                </select>
+                            </td>
+                            <td v-if="!displayPayeeRuleCreationPanel(trx)">
+                                <select v-model="trx.detectedCategoryId">
+                                    <option :id="null" :value="null"></option>
+                                    <option v-for="cat in categories" :id="cat.id" :value="cat.id">{{cat.name}}</option>
+                                </select>
+                            </td>
+                            <td>{{ trx.amount }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>

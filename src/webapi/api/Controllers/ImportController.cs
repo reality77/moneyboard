@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using business.import;
 using dto.import;
-using api.filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -23,9 +23,13 @@ namespace api.Controllers
         }
 
         [HttpPost("prepare")]
-        //[RequestFormSizeLimit(valueLengthLimit:200000)]
-        public IActionResult PrepareImport()
+        public IActionResult PrepareImport(int accountId)
         {
+            var account = _db.Accounts.Include(a => a.Transactions).SingleOrDefault(a => a.ID == accountId);
+
+            if(account == null)
+                return NotFound();
+
             var listImportedAccount = new List<ImportedAccount>();
 
             /*using(var reader = new StreamReader(this.Request.Body))
@@ -53,10 +57,9 @@ namespace api.Controllers
                     return BadRequest("[IMPORT] File extension not supported");
                 }
 
-
                 importer.OnFindDuplicates += new ExistingTransactionsFromHashDelegate(delegate (string hash)
                 {
-                    return _db.Transactions.Where(t => t.ImportedTransactionHash == hash);
+                    return account.Transactions.Where(t => t.ImportedTransactionHash == hash);
                 });
 
                 ImportedAccount importedAccount = null;
@@ -64,6 +67,9 @@ namespace api.Controllers
                 try
                 {
                     importedAccount = importer.Import(stream);
+                    importedAccount.ID = account.ID;
+                    importedAccount.Name = account.Name;
+                    importedAccount.Currency = account.Currency;
 
                     var detector = new TransactionDetection(_db);
                     foreach (var transaction in importedAccount.Transactions)
@@ -73,7 +79,7 @@ namespace api.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest($"[IMPORT] {ex.Message}");
+                    return BadRequest($"[IMPORT] {ex.ToString()}");
                 }
             }
 
@@ -107,25 +113,15 @@ namespace api.Controllers
         [HttpPost("uploadtoaccount")]
         public IActionResult UploadToAccount([FromBody] ImportedAccount importedAccount)
         {
-            var account = _db.Accounts.SingleOrDefault(a => a.Name == importedAccount.Name);
+            var account = _db.GetAccount(importedAccount.ID);
+
+            if(account == null)
+                return NotFound();
 
             using (var dbTransaction = _db.Database.BeginTransaction())
             {
                 try
                 {
-                    if (account == null)
-                    {
-                        account = new dal.models.Account
-                        {
-                            Name = importedAccount.Name,
-                            Currency = importedAccount.Currency,
-                        };
-
-                        _db.Accounts.Add(account);
-                    }
-
-                    _db.SaveChanges();
-
                     foreach (var importedTrx in importedAccount.Transactions)
                     {
                         var trx = new dal.models.Transaction

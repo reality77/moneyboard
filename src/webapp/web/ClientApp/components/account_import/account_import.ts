@@ -30,6 +30,8 @@ interface IImportedTransaction {
     detectedPayeeId: number;
     detectedCategoryId: number;
     importTransactionHash: string;
+
+    selectedForUpload: boolean;
 }
 
 class UnsavedTransactionChanges {
@@ -45,6 +47,8 @@ class UnsavedTransactionChanges {
 })
 export default class AccountTransactionsImportComponent extends Vue {
     
+    selectedAccount: IAccount|null = null;
+
     importedAccounts: IImportedAccount[] = [];
 
     accounts: IAccount[] = [];
@@ -53,6 +57,10 @@ export default class AccountTransactionsImportComponent extends Vue {
     unsavedTransactionChanges: { [key:string]:UnsavedTransactionChanges; } = {}
 
     targetAccountData: ImportPartData = { id: -1, name: "", setdefault: false };
+
+    infoMessage: string|null = null;
+
+    private currentFile:any;
 
     mounted() {
         fetch(Globals.API_URL + '/payees')
@@ -85,14 +93,51 @@ export default class AccountTransactionsImportComponent extends Vue {
 
     // --- Events
 
-    onFileChange(e: any) {
+    setSelectedAccount() {
 
+        console.log("Selected account :");
+        console.log(this.targetAccountData.name);
+
+        if(this.targetAccountData.id > 0) {
+            this.selectedAccount = this.accounts.filter(a => a.id == this.targetAccountData.id)[0];
+        }
+        else {
+
+            if(this.targetAccountData.name.trim().length == 0) {
+                alert("Invalid account name");
+                return;
+            }
+
+            var accData = { id:0, name:this.targetAccountData.name, currency: ECurrency.EUR, initialBalance: { currency: ECurrency.EUR, value: 0} };
+
+            Axios.post(Globals.API_URL + '/accounts', JSON.stringify(accData), {
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                }
+            })
+            .then(response => 
+            {
+                console.log(response);
+                this.selectedAccount = response.data as IAccount;
+
+                this.accounts.push(this.selectedAccount);
+            })
+            .catch(error => alert(error));
+        }
+    }
+
+    onFileChange(e: any) {
+        this.currentFile = e.target.files[0];
+        this.refreshFile();
+    }
+
+    private refreshFile() {
         //var files = e.target.files || e.dataTransfer.files;
         var formData = new FormData();
 
-        formData.append("file", e.target.files[0]);
+        formData.append("file", this.currentFile);
 
-        Axios.post(Globals.API_URL + '/import/prepare', formData, {
+        Axios.post(Globals.API_URL + '/import/prepare?accountId=' + this.selectedAccount!.id, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -105,6 +150,8 @@ export default class AccountTransactionsImportComponent extends Vue {
             var acc = data[0];
             for(var i=0; i < acc.transactions.length; i++) {
                 var trx = acc.transactions[i];
+
+                trx.selectedForUpload = true;
 
                 if(trx.detectedPayeeId == null && trx.detectedPayee != null) {
                     var unsaved = new UnsavedTransactionChanges();
@@ -261,18 +308,37 @@ export default class AccountTransactionsImportComponent extends Vue {
         acc.name = this.targetAccountData.name;
         acc.currency = 1;
 
+        var allTransactions = acc.transactions.slice();
+        acc.transactions = acc.transactions.filter(t => t.selectedForUpload);
+
         Axios.post(Globals.API_URL + '/import/uploadtoaccount', JSON.stringify(acc), {
             headers: {
                 "Content-Type": "application/json;charset=utf-8",
             }
         })
-            .then(response => {
-                alert("Transactions uploaded");
-            })
-            .catch(error => alert(error));
+        .then(response => {
+            this.infoMessage = acc.transactions.length.toString() + " transactions uploaded";
+            this.refreshFile();
+        })
+        .catch(error => {
+            acc.transactions = allTransactions;
+            alert(error);
+        });
     }
 
     // --- Display method helpers
+
+    selectAll() {
+        this.importedAccounts[0].transactions.forEach(t => {
+            t.selectedForUpload = true;
+        });
+    }
+
+    unselectAll() {
+        this.importedAccounts[0].transactions.forEach(t => {
+            t.selectedForUpload = false;
+        });
+    }
 
     isTransactionDisplayed(trx: IImportedTransaction) {
         return !trx.detectionSucceded || (trx.detectedPayee != null && trx.detectedPayeeId == null);
