@@ -141,6 +141,10 @@ namespace dal_postgres.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("Date");
+
+                    b.HasIndex("ImportedTransactionHash");
+
                     b.HasIndex("PayeeId");
 
                     b.ToTable("Transactions");

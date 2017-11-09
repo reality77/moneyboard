@@ -12,7 +12,7 @@ using System;
 namespace dal_postgres.Migrations
 {
     [DbContext(typeof(MoneyboardPostgresContext))]
-    [Migration("20171107104901_Initialisation")]
+    [Migration("20171109100039_Initialisation")]
     partial class Initialisation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,6 +141,10 @@ namespace dal_postgres.Migrations
                     b.HasIndex("AccountId");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Date");
+
+                    b.HasIndex("ImportedTransactionHash");
 
                     b.HasIndex("PayeeId");
 

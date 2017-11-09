@@ -14,6 +14,15 @@ namespace dal
             : base(options)
         { }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            
+            modelBuilder.Entity<Transaction>()
+                .HasIndex(t => new { t.ImportedTransactionHash });
+
+            modelBuilder.Entity<Transaction>()
+                .HasIndex(t => new { t.Date });
+        }
+
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Payee> Payees { get; set; }

@@ -167,6 +167,16 @@ namespace dal_postgres.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transactions_Date",
+                table: "Transactions",
+                column: "Date");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_ImportedTransactionHash",
+                table: "Transactions",
+                column: "ImportedTransactionHash");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_PayeeId",
                 table: "Transactions",
                 column: "PayeeId");
