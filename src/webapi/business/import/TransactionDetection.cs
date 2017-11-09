@@ -32,6 +32,9 @@ namespace business.import
                 if(!match.Success)
                     continue;
 
+                if(importRegEx.DefaultCaption != null)
+                    transaction.DetectedCaption = importRegEx.DefaultCaption;
+
                 transaction.DetectedTransactionType = importRegEx.TransactionType;
                 transaction.DetectionSucceded = true;
                 transaction.DetectedRegexId = importRegEx.ID;

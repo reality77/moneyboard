@@ -79,7 +79,7 @@ namespace dal
             {
                 AddImportRegex("^VIR (?'mode'(.*?)) (?'payee'(.*))$", dto.ETransactionType.Transfer);
                 AddImportRegex("^PAIEMENT (?'mode'(.*?)) (?'user_date_FR'(.*?)) ((?'comment'(.*?)) |)(?'payee'(.*))$", dto.ETransactionType.Payment);
-                AddImportRegex("^RETRAIT (?'mode'(.*?)) (?'user_date_ddMMyy'(.*?)) (?'comment'(.*))$", dto.ETransactionType.Withdrawal);
+                AddImportRegex("^RETRAIT (?'mode'(.*?)) (?'user_date_FR'(.*?)) (?'comment'(.*))$", dto.ETransactionType.Withdrawal, "Retrait");
                 AddImportRegex("^PRLV (?'mode'(.*?)) (?'payee'(.*))$", dto.ETransactionType.Debit);
 
                 this.SaveChanges();
@@ -97,9 +97,9 @@ namespace dal
                 this.SaveChanges();
         }
 
-        private ImportRegex AddImportRegex(string regex, dto.ETransactionType transactionType = dto.ETransactionType.Unknown)
+        private ImportRegex AddImportRegex(string regex, dto.ETransactionType transactionType = dto.ETransactionType.Unknown, string defaultCaption = null)
         {
-            var ir = new ImportRegex { RegexString = regex, TransactionType = transactionType };
+            var ir = new ImportRegex { RegexString = regex, TransactionType = transactionType, DefaultCaption = defaultCaption };
             this.ImportRegexes.Add(ir);
 
             return ir;

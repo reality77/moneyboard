@@ -22,6 +22,8 @@ namespace dal.models
         
         public dto.ETransactionType TransactionType { get; set; }
 
+        public string DefaultCaption { get; set; }
+
         [NotMapped]
         public Regex Regex 
         { 
