@@ -100,6 +100,8 @@ export default class AccountTransactionsImportComponent extends Vue {
         .then(response => response.data as Promise<IImportedAccount[]>)
         .then(data => 
         {
+            this.unsavedTransactionChanges = {};
+
             var acc = data[0];
             for(var i=0; i < acc.transactions.length; i++) {
                 var trx = acc.transactions[i];
@@ -300,5 +302,9 @@ export default class AccountTransactionsImportComponent extends Vue {
             return array[0].name;
         else
             return "";
+    }
+
+    displayPayeeRuleCreationPanel(trx: IImportedTransaction) : boolean {
+        return trx.detectedPayeeId == null && trx.detectedPayee != null && this.unsavedTransactionChanges[trx.importTransactionHash] != null
     }
 }
