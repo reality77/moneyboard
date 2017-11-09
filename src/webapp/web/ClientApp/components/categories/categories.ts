@@ -5,7 +5,7 @@ import { Globals } from '../common/globals';
 import { ICategory } from '../common/interfaces';
 
 @Component
-export default class PayeeViewComponent extends Vue {
+export default class CategoriesViewComponent extends Vue {
     categories: ICategory[] = [];
     itemsPerPage: number = 25;
     pagerIndexes: number[] = [];
