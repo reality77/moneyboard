@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using dto.import;
+
 
 namespace business.import
 {
@@ -93,7 +95,10 @@ namespace business.import
 						case '^':
 							{
 								transaction.GenerateHash(_sha1);
-								account.Transactions.Add(transaction);
+								var duplicates = base.RaiseOnFindDuplicates(transaction.ImportTransactionHash);
+
+								if(duplicates == null || duplicates.Count() == 0)
+									account.Transactions.Add(transaction);
 								transaction = null;
 							}
 							break;
@@ -125,7 +130,13 @@ namespace business.import
 			}
 
 			if(transaction != null)
-				account.Transactions.Add(transaction);
+			{
+				transaction.GenerateHash(_sha1);
+				var duplicates = base.RaiseOnFindDuplicates(transaction.ImportTransactionHash);
+
+				if(duplicates == null || duplicates.Count() == 0)
+					account.Transactions.Add(transaction);
+			}
 
 			return account;
 		}

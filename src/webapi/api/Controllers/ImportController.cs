@@ -53,6 +53,12 @@ namespace api.Controllers
                     return BadRequest("[IMPORT] File extension not supported");
                 }
 
+
+                importer.OnFindDuplicates += new ExistingTransactionsFromHashDelegate(delegate (string hash)
+                {
+                    return _db.Transactions.Where(t => t.ImportedTransactionHash == hash);
+                });
+
                 ImportedAccount importedAccount = null;
 
                 try
