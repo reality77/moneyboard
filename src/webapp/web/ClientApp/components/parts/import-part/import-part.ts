@@ -20,8 +20,6 @@ export default class ImportPart extends Vue {
     datalist: Array<any>;
     @Prop()
     value: ImportPartData;
-    @Prop()
-    noid: boolean;
 
     private initialNewName:string = "";
 

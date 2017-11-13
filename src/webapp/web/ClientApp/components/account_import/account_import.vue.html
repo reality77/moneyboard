@@ -60,7 +60,7 @@
                                 <span style="font-size:smaller">{{ trx.captionOrPayee }}</span>
                                 <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].payeeData" :datalist="payees" placeholder="Tiers" :selectedname="trx.detectedPayee" :forcesetdefault="true"></import-part>
                                 <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].categoryData" :datalist="categories" placeholder="Catégorie"></import-part>
-                                <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].captionData" placeholder="Libellé" :noid="true"></import-part>
+                                <import-part v-model="unsavedTransactionChanges[trx.importTransactionHash].captionData" placeholder="Libellé"></import-part>
                                 <input type="button" @click="onValidateTemporaryChanges(trx)" value="Valider" />
                             </td>
                             <td v-else>
