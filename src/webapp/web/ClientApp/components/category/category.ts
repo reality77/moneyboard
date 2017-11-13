@@ -14,6 +14,9 @@ export default class CategoryDetailViewComponent extends Vue {
     pagerIndexes: number[] = [];
     pagerMaxPages: number = 5;
 
+    chartX: any[] = [];
+    chartY: any[] = [];
+
     mounted() {
 
         this.categoryId = parseInt(this.$route.params.id);
@@ -31,18 +34,60 @@ export default class CategoryDetailViewComponent extends Vue {
             .then(response => response.json() as Promise<IDateStatistics>)
             .then(data => {
                 this.statistics = data;
+
+                this.chartX = [ 'Date' ];
+                this.chartY = [ 'Montant' ];
+
+                for(var date in this.statistics.data) {
+                    this.chartX.push(this.getDate(parseInt(date)));
+                    this.chartY.push(Math.abs(this.statistics.data[date].value));
+
+                    this.generateChart();
+                }
             })
             .catch(error => {
                 console.log(error);
             });
     }
 
-    getDate(statdate: number): string {
-        console.log(statdate);
+    generateChart() {
+        var c3:any = require('c3');
+        
+                var chart = c3.generate({
+                    bindto: '#chart',
+                    data: {
+                        x : 'Date',
+                        xFormat: '%M',
+                        columns: [
+                            this.chartX,
+                            this.chartY,
+                        ],
+                        type: 'bar'
+                    },
+                    bar: {
+                        width: {
+                            ratio: 0.75 // this makes bar width n% of length between ticks
+                        }
+                    },
+                    axis: {
+                        x: {
+                            type: 'timeseries',
+                            format: '%Y-%m-%d'
+                        }
+                    }
+                });
+    }
+
+    getDate(statdate: number): Date {
+        //console.log(statdate);
         var year = Math.floor(statdate / 100);
-        console.log(year);
+        //console.log(year);
         var month = statdate - year * 100;
-        console.log(month);
-        return (new Date(year, month - 1)).toLocaleDateString();
+        //console.log(month);
+        return (new Date(year, month - 1, 1));
+    }
+
+    getFormattedDate(statdate: number): string {
+        return this.getDate(statdate).toLocaleDateString();
     }
 }

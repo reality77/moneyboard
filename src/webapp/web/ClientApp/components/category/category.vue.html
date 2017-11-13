@@ -13,14 +13,20 @@
                 </thead>
                 <tbody>
                     <tr v-for="(value, key) in statistics.data">
-                        <td>{{ getDate(key) }}</td>
+                        <td>{{ getFormattedDate(key) }}</td>
                         <td>{{ value.value }} {{ value.currency }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <span v-else>Loading...</span>
+
+        <div id="chart">
+
+        </div>
+
     </div>
+
 </template>
 
 <script src="./category.ts"></script>
