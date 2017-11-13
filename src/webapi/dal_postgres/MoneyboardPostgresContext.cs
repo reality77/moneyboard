@@ -14,5 +14,11 @@ namespace dal_postgres
             : base(options)
         { }
   
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            
+            //builder.Ignore<dal.models.virtuals.VirtualMonthlyCategoryStat>(); // ignored in migrations (only used for GROUP BY)
+        }
     }
 }

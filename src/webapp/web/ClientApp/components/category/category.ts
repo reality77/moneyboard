@@ -1,21 +1,18 @@
-/// <reference path='../common/interfaces.ts'/>
-
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Globals } from '../common/globals';
-import { ICategory, IDateStatistics } from '../common/interfaces';
+import { ICategory, ICurrencyNumberStatistics, ICurrency } from '../common/interfaces';
 
 @Component
 export default class CategoryDetailViewComponent extends Vue {
     categoryId: number = 0;
     category: ICategory|null = null;
-    statistics: IDateStatistics = { data: {} };
+    statistics: ICurrencyNumberStatistics = { xValues: [], seriesNames:[], dataPoints:[] };
     itemsPerPage: number = 25;
     pagerIndexes: number[] = [];
     pagerMaxPages: number = 5;
 
-    chartX: any[] = [];
-    chartY: any[] = [];
+    charts: any[] = [];
 
     mounted() {
 
@@ -30,20 +27,52 @@ export default class CategoryDetailViewComponent extends Vue {
                 console.log(error);
             });
 
-        fetch(Globals.API_URL + '/categories/statisticsbycategory?accountId=1&categoryId=' + this.$route.params.id)
-            .then(response => response.json() as Promise<IDateStatistics>)
+        fetch(Globals.API_URL + '/categories/' + this.$route.params.id + '/monthlystatistics?accountId=1')
+            .then(response => response.json() as Promise<ICurrencyNumberStatistics>)
             .then(data => {
-                this.statistics = data;
 
-                this.chartX = [ 'Date' ];
-                this.chartY = [ 'Montant' ];
+                console.log(data);
 
-                for(var date in this.statistics.data) {
-                    this.chartX.push(this.getDate(parseInt(date)));
-                    this.chartY.push(Math.abs(this.statistics.data[date].value));
+                //this.statistics = data;
+                this.charts = [];
 
-                    this.generateChart();
+                var chartX = [ 'Date' ];
+
+                for(var xval in data.xValues) {
+                    chartX.push(xval);
                 }
+
+                this.charts.push(chartX);
+
+                console.log(chartX);
+                
+                data.seriesNames.forEach((serie, i) => {
+                    console.log("---");
+                    console.log(i);
+                    console.log(serie);
+                    var currentY:any[] = [serie];
+
+                    console.log("points");
+                    
+                    data.dataPoints[i].forEach((point:ICurrency|null, j:number) => {
+                        if(point == null) {
+                            console.log("NULL");
+                            currentY.push(null);
+                        } else {
+                            console.log(point);
+                            currentY.push(point!.value);
+                        }
+                    });
+
+                    console.log(" => ");
+                    console.log(currentY);
+                
+                    this.charts.push(currentY);
+                });
+
+                console.log(this.charts);
+
+                this.generateChart();
             })
             .catch(error => {
                 console.log(error);
@@ -58,10 +87,7 @@ export default class CategoryDetailViewComponent extends Vue {
                     data: {
                         x : 'Date',
                         xFormat: '%M',
-                        columns: [
-                            this.chartX,
-                            this.chartY,
-                        ],
+                        columns: this.charts,
                         type: 'bar'
                     },
                     bar: {

@@ -58,6 +58,8 @@ export interface ITransaction {
     importedTransactionHash: string;
 }
 
-export interface IDateStatistics {
-    data: { [key: number]: ICurrency; }; 
+export interface ICurrencyNumberStatistics {
+    xValues: any[];
+    seriesNames: string[];
+    dataPoints: any[];
 }
