@@ -1,14 +1,14 @@
-import { ECurrency, ETransactionType } from '../common/enums'
+import { ETransactionType } from '../common/enums'
 
 export interface ICurrency {
-    currency: ECurrency;
+    currency: string;
     value: number;
 }
 
 export interface IAccount {
     id: number;
     name: string;
-    currency: ECurrency;
+    currency: string;
     initialBalance: ICurrency;
     balance: ICurrency;
 }

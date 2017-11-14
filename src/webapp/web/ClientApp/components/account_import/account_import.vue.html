@@ -5,7 +5,7 @@
         <p>Importer des transactions</p>
 
         <div v-if="infoMessage != null" class="col-sm-12 alert alert-info">
-            <p><span v-model="infoMessage"></span></p>
+            <p><span>{{ infoMessage }}</span></p>
         </div>
 
         <div v-if="selectedAccount == null" class="col-sm-12">

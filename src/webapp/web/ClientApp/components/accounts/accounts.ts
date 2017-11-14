@@ -18,6 +18,10 @@ export default class AccountsComponent extends Vue {
                 console.log(error);
             });
     }
+    
+    getEditLink(accountId:number) : string {
+        return "/accounts/edit/" + accountId;
+    }
 
     getTransactionsLink(accountId:number) : string {
         return "/account_transactions/" + accountId;
