@@ -11,7 +11,8 @@ export default class PayeeViewComponent extends Vue {
     pagerIndexes: number[] = [];
     pagerMaxPages: number = 5;
 
-    charts: any[] = [];
+    chart_revenues: any[] = [];
+    chart_expenses: any[] = [];
 
     mounted() {
 
@@ -28,7 +29,8 @@ export default class PayeeViewComponent extends Vue {
             .then(response => response.json() as Promise<ICurrencyNumberStatistics>)
             .then(data => {
 
-                this.charts = [];
+                this.chart_revenues = [];
+                this.chart_expenses = [];
 
                 var chartX = [ 'Date' ];
 
@@ -36,49 +38,74 @@ export default class PayeeViewComponent extends Vue {
                     chartX.push(xval);
                 }
 
-                this.charts.push(chartX);
+                this.chart_revenues.push(chartX);
+                this.chart_expenses.push(chartX);
                 
                 data.seriesNames.forEach((serie, i) => {
                     var currentY:any[] = [serie];
-
+                    var isRevenue;
+                    
                     data.dataPoints[i].forEach((point:ICurrency|null, j:number) => {
+
+
                         if(point == null) {
                             currentY.push(null);
                         } else {
-                            currentY.push(point!.value);
+                            if(point!.value > 0)
+                                isRevenue = true;
+                            else if(point!.value < 0)
+                                isRevenue = false;
+                            currentY.push(Math.abs(point!.value));
                         }
                     });
                 
-                    this.charts.push(currentY);
+                    if(isRevenue)
+                        this.chart_revenues.push(currentY);
+                    else
+                        this.chart_expenses.push(currentY);
                 });
 
-                console.log(this.charts);
-
-                this.generateChart();
+                this.generateCharts();
             })
             .catch(error => {
                 console.log(error);
             });
     }
 
-    generateChart() {
+    generateCharts() {
         var c3:any = require('c3');
         
-                var chart = c3.generate({
-                    bindto: '#chart',
-                    data: {
-                        x : 'Date',
-                        xFormat: '%M',
-                        columns: this.charts,
-                        type: 'pie'
-                    },
-                    axis: {
-                        x: {
-                            type: 'timeseries',
-                            format: '%Y-%m-%d'
-                        }
-                    }
-                });
+        var chart = c3.generate({
+            bindto: '#chart_expenses',
+            data: {
+                x : 'Date',
+                xFormat: '%M',
+                columns: this.chart_expenses,
+                type: 'pie'
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    format: '%Y-%m-%d'
+                }
+            }
+        });
+
+        var chart = c3.generate({
+            bindto: '#chart_revenues',
+            data: {
+                x : 'Date',
+                xFormat: '%M',
+                columns: this.chart_revenues,
+                type: 'pie'
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    format: '%Y-%m-%d'
+                }
+            }
+        });        
     }
 
     getCategoryUrl(categoryId: number): string {

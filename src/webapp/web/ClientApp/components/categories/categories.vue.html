@@ -1,20 +1,26 @@
 <template>
     <div>
-        <h1>Liste des cat�gories</h1>
+        <h1>Liste des cat&eacute;gories</h1>
 
-        <div v-if="categories != null">
-
-            <ul>
-                <li v-for="cat in categories">
-                    <a :href="getCategoryUrl(cat.id)">{{ cat.name }}</a>
-                </li>
-            </ul>
+        <div v-if="categories != null" class="row">
+            <div class="col-md-6 col-sm-12">
+                <ul>
+                    <li v-for="cat in categories">
+                        <a :href="getCategoryUrl(cat.id)">{{ cat.name }}</a>
+                    </li>
+                </ul>
+            </div>
+    
+            <div class="col-md-6 col-sm-12">
+                <div id="chart_expenses">
+                </div>
+    
+                <div id="chart_revenues">
+                </div>
+            </div>
         </div>
         <span v-else>Loading...</span>
 
-        <div id="chart">
-            
-        </div>
     </div>
 </template>
 
