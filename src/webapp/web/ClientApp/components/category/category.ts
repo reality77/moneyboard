@@ -31,42 +31,29 @@ export default class CategoryDetailViewComponent extends Vue {
             .then(response => response.json() as Promise<ICurrencyNumberStatistics>)
             .then(data => {
 
-                console.log(data);
-
-                //this.statistics = data;
+                this.statistics = data;
                 this.charts = [];
 
                 var chartX = [ 'Date' ];
 
-                for(var xval in data.xValues) {
-                    chartX.push(xval);
-                }
+                data.xValues.forEach((sdate, i) => {
+                    console.log(sdate);
+                    var date = new Date(sdate);
+                    chartX.push(date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate());
+                    this.charts.push(chartX);
+                });
 
-                this.charts.push(chartX);
-
-                console.log(chartX);
-                
                 data.seriesNames.forEach((serie, i) => {
-                    console.log("---");
-                    console.log(i);
-                    console.log(serie);
                     var currentY:any[] = [serie];
 
-                    console.log("points");
-                    
                     data.dataPoints[i].forEach((point:ICurrency|null, j:number) => {
                         if(point == null) {
-                            console.log("NULL");
                             currentY.push(null);
                         } else {
-                            console.log(point);
-                            currentY.push(point!.value);
+                            currentY.push(Math.abs(point!.value));
                         }
                     });
 
-                    console.log(" => ");
-                    console.log(currentY);
-                
                     this.charts.push(currentY);
                 });
 
@@ -86,7 +73,7 @@ export default class CategoryDetailViewComponent extends Vue {
                     bindto: '#chart',
                     data: {
                         x : 'Date',
-                        xFormat: '%M',
+                        xFormat: '%Y-%m-%d',
                         columns: this.charts,
                         type: 'bar'
                     },
@@ -98,7 +85,7 @@ export default class CategoryDetailViewComponent extends Vue {
                     axis: {
                         x: {
                             type: 'timeseries',
-                            format: '%Y-%m-%d'
+                            format: '%m/%Y'
                         }
                     }
                 });

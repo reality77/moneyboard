@@ -12,9 +12,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(value, key) in statistics.data">
-                        <td>{{ getFormattedDate(key) }}</td>
-                        <td>{{ value.value }} {{ value.currency }}</td>
+                    <tr v-for="(date, index) in statistics.xValues">
+                        <td>{{ date }}</td>
+                        <td>{{ statistics.dataPoints[0][index].value }} {{ statistics.dataPoints[0][index].currency }}</td>
                     </tr>
                 </tbody>
             </table>
