@@ -75,5 +75,62 @@ namespace api.Controllers
         public void Delete(int id)
         {
         }
+
+        // GET: accounts/monthlystatistics
+        [HttpGet("{accountId}/monthlystatistics")]
+        public dto.statistics.CurrencyNumberStatisticsByDate StatisticsByCategory(int accountId, DateTime? dateStart = null, DateTime? dateEnd = null)
+        {
+            if (dateEnd == null)
+                dateEnd = DateTime.Today;
+            else
+                dateEnd = dateEnd.Value.Date;
+
+            if (dateStart == null)
+                dateStart = dateEnd.Value.AddYears(-1);
+            else
+                dateStart = dateStart.Value.Date;
+
+            var account = _db.GetAccount(accountId);
+
+            var queryBase = _db.Transactions.Where(t => t.AccountId == accountId)
+                .GroupBy(t => new { t.Date.Year, t.Date.Month})
+                .Select(g => new { Key = g.Key, Value = g.Sum(t => t.Amount) });
+
+            var stat = new dto.statistics.CurrencyNumberStatisticsByDate();
+
+            stat.Init();
+
+            int serieIndex = stat.AddSerie("Revenus");
+            var dataRevenues = queryBase.Where(t => t.Value > 0);
+
+            foreach (var item in dataRevenues)
+            {
+                int idx = stat.SetXValue(new DateTime(item.Key.Year, item.Key.Month, 1));
+                
+                stat.SetValue(idx, serieIndex, new dto.CurrencyNumber
+                    {
+                        Currency = account.Currency,
+                        Value = item.Value,
+                    });
+            }
+
+            serieIndex = stat.AddSerie("Dépenses");
+            var dataExpenses = queryBase.Where(t => t.Value < 0);
+
+            foreach (var item in dataExpenses)
+            {
+                int idx = stat.SetXValue(new DateTime(item.Key.Year, item.Key.Month, 1));
+                
+                stat.SetValue(idx, serieIndex, new dto.CurrencyNumber
+                    {
+                        Currency = account.Currency,
+                        Value = item.Value,
+                    });
+            }
+
+            stat.GenerateDataPoints();
+
+            return stat;
+        }
     }
 }

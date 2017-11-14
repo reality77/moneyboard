@@ -13,7 +13,11 @@
             </thead>
             <tbody>
                 <tr v-for="acc in accounts">
-                    <td><a v-bind:href="getTransactionsLink(acc.id)">{{ acc.name }}</a></td>
+                    <td>
+                        <a v-bind:href="getEditLink(acc.id)"><i class="glyphicon glyphicon-edit"></i></a>
+        
+                        <a v-bind:href="getTransactionsLink(acc.id)">{{ acc.name }}</a>
+                    </td>
                     <td>{{ acc.balance.value }} {{ acc.balance.currency }}</td>
                 </tr>
             </tbody>

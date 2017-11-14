@@ -30,6 +30,9 @@ namespace dal
         public DbSet<ImportRegex> ImportRegexes { get; set; }
         public DbSet<ImportPayeeSelection> ImportPayeeSelections { get; set; }
 
+        public DbSet<dal.models.virtuals.VirtualMonthlyCategoryStat> MonthlyCategoryStats { get; set; }
+
+
         public void SeedData()
         {
             this.Database.EnsureCreated();

@@ -2,13 +2,12 @@ import Vue from 'vue';
 import Axios from 'axios';
 
 import { Component } from 'vue-property-decorator';
-import { ECurrency } from '../common/enums';
 import { Globals, ImportPartData } from '../common/globals';
 import { IAccount, IPayee, ICategory } from '../common/interfaces';
 
 interface IImportedAccount {
     name: string;
-    currency: ECurrency;
+    currency: string;
     transactions: IImportedTransaction[];
 }
 
@@ -108,7 +107,7 @@ export default class AccountTransactionsImportComponent extends Vue {
                 return;
             }
 
-            var accData = { id:0, name:this.targetAccountData.name, currency: ECurrency.EUR, initialBalance: { currency: ECurrency.EUR, value: 0} };
+            var accData = { id:0, name:this.targetAccountData.name, currency: "EUR", initialBalance: { currency: "EUR", value: 0} };
 
             Axios.post(Globals.API_URL + '/accounts', JSON.stringify(accData), {
                 headers: {
@@ -306,7 +305,7 @@ export default class AccountTransactionsImportComponent extends Vue {
     uploadTransactions(acc: IImportedAccount) {
 
         acc.name = this.targetAccountData.name;
-        acc.currency = 1;
+        acc.currency = "EUR";
 
         var allTransactions = acc.transactions.slice();
         acc.transactions = acc.transactions.filter(t => t.selectedForUpload);

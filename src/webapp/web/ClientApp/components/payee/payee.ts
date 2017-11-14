@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Globals } from '../common/globals';
-import { IPayee, IDateStatistics } from '../common/interfaces';
+import { IPayee, ICurrencyNumberStatistics } from '../common/interfaces';
 
 @Component
 export default class PayeeDetailViewComponent extends Vue {
     payeeId: number = 0;
     payee: IPayee|null = null;
-    statistics: IDateStatistics = { data: {} };
+    statistics: ICurrencyNumberStatistics = { xValues: [], seriesNames:[], dataPoints:[] };
     itemsPerPage: number = 25;
     pagerIndexes: number[] = [];
     pagerMaxPages: number = 5;
@@ -26,7 +26,7 @@ export default class PayeeDetailViewComponent extends Vue {
             });
 
         fetch(Globals.API_URL + '/payees/statisticsbypayee?accountId=1&payeeId=' + this.$route.params.id)
-            .then(response => response.json() as Promise<IDateStatistics>)
+            .then(response => response.json() as Promise<ICurrencyNumberStatistics>)
             .then(data => {
                 this.statistics = data;
             })
