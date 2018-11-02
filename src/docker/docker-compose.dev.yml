@@ -1,0 +1,46 @@
+version: '3.1'
+
+# ****** SERVICES
+
+services:
+    
+    api:
+        image: monayboard_api:latest
+        environment:
+            DB_SERVER: database
+            DB_USER: moneyboard
+            DB_PASSWORD: moneyboard
+        deploy:
+            restart_policy:
+                condition: on-failure
+        ports:
+            - "5000:5000"
+        depends_on:
+            - database
+        volumes:
+            - log_data:/app/logs
+        networks:
+            - backnet
+
+    database:
+        image: postgres:alpine
+        volumes:
+            - db_data:/var/lib/postgresql/data
+        restart: always
+        environment:
+            POSTGRES_USER: moneyboard
+            POSTGRES_PASSWORD: moneyboard
+        networks:
+            - backnet
+
+# ****** NETWORKS
+
+networks:
+    mb_back:
+        external: true
+
+# ****** VOLUMES
+
+volumes:
+    db_data: 
+    log_data: 

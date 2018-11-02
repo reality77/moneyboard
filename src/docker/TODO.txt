@@ -1,0 +1,3 @@
+TODO :
+- Utiliser variables d'environnement pour la connexion à la base de données 
+- Utiliser variable d'environnement pour gérer Origin CORS
