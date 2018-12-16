@@ -1,5 +1,6 @@
 # CUSTOM
 /ignored
+src/webapi/api/appsettings.Development.json
 #
 
 /Properties/launchSettings.json
