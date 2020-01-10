@@ -3,8 +3,9 @@ using dto.transactions_view;
 
 namespace api.Controllers
 {
-    [Produces("application/json")]
+    [ApiController]
     [Route("transactions_view")]
+    [Produces("application/json")]
     public class TransactionsViewController : MoneyboardController
     {
         protected readonly dal_postgres.MoneyboardPostgresContext _db;

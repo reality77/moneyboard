@@ -11,8 +11,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
+    [ApiController]
+    [Route("import")]
     [Produces("application/json")]
-    [Route("Import")]
     public class ImportController : MoneyboardController
     {
         protected readonly dal_postgres.MoneyboardPostgresContext _db;

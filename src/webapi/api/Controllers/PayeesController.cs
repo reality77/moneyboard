@@ -8,8 +8,9 @@ using dal;
 
 namespace api.Controllers
 {
-    [Produces("application/json")]
+    [ApiController]
     [Route("payees")]
+    [Produces("application/json")]
     public class PayeesController : MoneyboardController
     {
         protected readonly dal_postgres.MoneyboardPostgresContext _db;

@@ -10,8 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
-    [Produces("application/json")]
+    [ApiController]
     [Route("Transactions")]
+    [Produces("application/json")]
     public class TransactionsController : MoneyboardController
     {
         protected readonly dal_postgres.MoneyboardPostgresContext _db;
