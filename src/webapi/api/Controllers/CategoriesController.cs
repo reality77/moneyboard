@@ -14,9 +14,9 @@ namespace api.Controllers
     [Produces("application/json")]
     public class CategoriesController : MoneyboardController
     {
-        protected readonly dal_postgres.MoneyboardPostgresContext _db;
+        protected readonly dal.Model.MoneyboardContext _db;
 
-        public CategoriesController(dal_postgres.MoneyboardPostgresContext db)
+        public CategoriesController(dal.Model.MoneyboardContext db)
         {
             _db = db;
         }
@@ -48,7 +48,7 @@ namespace api.Controllers
             if (dbCategory != null)
                 return BadRequest("Category name already exists");
 
-            dbCategory = new dal.models.Category();
+            dbCategory = new dal.Model.Category();
             dbCategory.Name = categoryName;
 
             _db.Categories.Add(dbCategory);
@@ -132,13 +132,13 @@ namespace api.Controllers
 
                 if(item.Key.Category == null)
                     serieIndex = nullserieIndex;
-                else if(!dicSerieIndexByCategoryId.ContainsKey(item.Key.Category.ID))
+                else if(!dicSerieIndexByCategoryId.ContainsKey(item.Key.Category.Id))
                 {
                     serieIndex = stat.AddSerie(item.Key.Category.Name);
-                    dicSerieIndexByCategoryId[item.Key.Category.ID] = serieIndex;
+                    dicSerieIndexByCategoryId[item.Key.Category.Id] = serieIndex;
                 }
                 else
-                    serieIndex = dicSerieIndexByCategoryId[item.Key.Category.ID];
+                    serieIndex = dicSerieIndexByCategoryId[item.Key.Category.Id];
 
                 int idx = stat.SetXValue(new DateTime(item.Key.Year, item.Key.Month, 1));
                 

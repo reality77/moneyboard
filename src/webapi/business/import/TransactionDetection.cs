@@ -6,9 +6,9 @@ using System.Globalization;
 using System.Diagnostics;
 using dto.import;
 using System.IO;
-using dal;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using dal.Model;
 
 namespace business.import
 {
@@ -16,7 +16,7 @@ namespace business.import
     {
         const string USERDATE_TAG = "user_date_";
 
-        IQueryable<dal.models.ImportRegex> _importRegexes;
+        IQueryable<dal.Model.ImportRegex> _importRegexes;
 
         public TransactionDetection(MoneyboardContext db)
         {
@@ -32,12 +32,14 @@ namespace business.import
                 if(!match.Success)
                     continue;
 
+                /* TODO
                 if(importRegEx.DefaultCaption != null)
                     transaction.DetectedCaption = importRegEx.DefaultCaption;
-
+                */
+                
                 transaction.DetectedTransactionType = importRegEx.TransactionType;
                 transaction.DetectionSucceded = true;
-                transaction.DetectedRegexId = importRegEx.ID;
+                transaction.DetectedRegexId = importRegEx.Id;
 
                 foreach(Group group in match.Groups)
                 {

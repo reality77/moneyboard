@@ -12,7 +12,7 @@ namespace api
         {
             using (var serviceScope = scopeFactory.CreateScope())
             {
-                var dbcontext = serviceScope.ServiceProvider.GetService<dal_postgres.MoneyboardPostgresContext>();
+                var dbcontext = serviceScope.ServiceProvider.GetService<dal.Model.MoneyboardContext>();
                 dbcontext.SeedData();
             }
         }

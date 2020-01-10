@@ -1,3 +1,4 @@
+using dal.Model;
 using dto;
 using System.Collections.Generic;
 

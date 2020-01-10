@@ -5,14 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dal_postgres\dal_postgres.csproj" />
     <ProjectReference Include="..\dal\dal.csproj" />
     <ProjectReference Include="..\..\common\dto\dto.csproj" />
     <ProjectReference Include="..\business\business.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.0" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dal.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,7 +31,7 @@ namespace api
 
             services.AddControllers();
 
-            services.AddDbContext<dal_postgres.MoneyboardPostgresContext>(options => options.UseNpgsql(this.Configuration["DbConnection"]));
+            services.AddDbContext<MoneyboardContext>(options => options.UseNpgsql(this.Configuration.GetConnectionString("Moneyboard")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

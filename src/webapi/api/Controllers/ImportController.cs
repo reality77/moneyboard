@@ -16,9 +16,9 @@ namespace api.Controllers
     [Produces("application/json")]
     public class ImportController : MoneyboardController
     {
-        protected readonly dal_postgres.MoneyboardPostgresContext _db;
+        protected readonly dal.Model.MoneyboardContext _db;
 
-        public ImportController(dal_postgres.MoneyboardPostgresContext db)
+        public ImportController(dal.Model.MoneyboardContext db)
         {
             _db = db;
         }
@@ -26,7 +26,7 @@ namespace api.Controllers
         [HttpPost("prepare")]
         public IActionResult PrepareImport(int accountId)
         {
-            var account = _db.Accounts.Include(a => a.Transactions).SingleOrDefault(a => a.ID == accountId);
+            var account = _db.Accounts.Include(a => a.Transactions).SingleOrDefault(a => a.Id == accountId);
 
             if(account == null)
                 return NotFound();
@@ -68,7 +68,7 @@ namespace api.Controllers
                 try
                 {
                     importedAccount = importer.Import(stream);
-                    importedAccount.ID = account.ID;
+                    importedAccount.ID = account.Id;
                     importedAccount.Name = account.Name;
                     importedAccount.Currency = account.Currency;
 
@@ -96,7 +96,7 @@ namespace api.Controllers
             if (payeeSelection != null)
                 return BadRequest($"There is already a rule on regex {payeeRegistration.RegexId} for the caption '{payeeRegistration.ImportedCaption}'");
 
-            payeeSelection = new dal.models.ImportPayeeSelection
+            payeeSelection = new dal.Model.ImportPayeeSelection
             {
                 ImportRegexId = payeeRegistration.RegexId,
                 ImportedCaption = payeeRegistration.ImportedCaption,
@@ -125,9 +125,9 @@ namespace api.Controllers
                 {
                     foreach (var importedTrx in importedAccount.Transactions)
                     {
-                        var trx = new dal.models.Transaction
+                        var trx = new dal.Model.Transaction
                         {
-                            AccountId = account.ID,
+                            AccountId = account.Id,
                             Amount = importedTrx.Amount,
                             Caption = importedTrx.DetectedCaption ?? importedTrx.CaptionOrPayee,
                             CategoryId = importedTrx.DetectedCategoryId,
@@ -147,7 +147,7 @@ namespace api.Controllers
                     _db.SaveChanges();
                     dbTransaction.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     dbTransaction.Rollback();
                     throw;

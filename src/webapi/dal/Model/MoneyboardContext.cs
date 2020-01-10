@@ -1,35 +1,134 @@
-﻿using dal.models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using System;
+﻿using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
-namespace dal
+namespace dal.Model
 {
-    public class MoneyboardContext : DbContext
+    public partial class MoneyboardContext : DbContext
     {
-        public MoneyboardContext(DbContextOptions options)
-            : base(options)
-        { }
+        IConfiguration _config;
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
-            
-            modelBuilder.Entity<Transaction>()
-                .HasIndex(t => new { t.ImportedTransactionHash });
-
-            modelBuilder.Entity<Transaction>()
-                .HasIndex(t => new { t.Date });
+        public MoneyboardContext()
+        {
         }
 
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Payee> Payees { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<ImportRegex> ImportRegexes { get; set; }
-        public DbSet<ImportPayeeSelection> ImportPayeeSelections { get; set; }
+        public MoneyboardContext(DbContextOptions<MoneyboardContext> options, IConfiguration config)
+            : base(options)
+        {
+            _config = config;
+        }
 
+        public virtual DbSet<Account> Accounts { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<ImportPayeeSelection> ImportPayeeSelections { get; set; }
+        public virtual DbSet<ImportRegex> ImportRegexes { get; set; }
+        public virtual DbSet<Payee> Payees { get; set; }
+        public virtual DbSet<Transaction> Transactions { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseNpgsql(_config.GetConnectionString("Moneyboard"));
+            }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Account>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Balance).HasColumnType("numeric");
+
+                entity.Property(e => e.InitialBalance).HasColumnType("numeric");
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
+            modelBuilder.Entity<ImportPayeeSelection>(entity =>
+            {
+                entity.HasIndex(e => e.CategoryId);
+
+                entity.HasIndex(e => e.ImportRegexId);
+
+                entity.HasIndex(e => e.PayeeId);
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.ImportedCaption).IsRequired();
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.ImportPayeeSelections)
+                    .HasForeignKey(d => d.CategoryId);
+
+                entity.HasOne(d => d.ImportRegex)
+                    .WithMany(p => p.ImportPayeeSelections)
+                    .HasForeignKey(d => d.ImportRegexId);
+
+                entity.HasOne(d => d.Payee)
+                    .WithMany(p => p.ImportPayeeSelections)
+                    .HasForeignKey(d => d.PayeeId);
+            });
+
+            modelBuilder.Entity<ImportRegex>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.RegexString).IsRequired();
+            });
+
+            modelBuilder.Entity<Payee>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Name).IsRequired();
+            });
+
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.HasIndex(e => e.AccountId);
+
+                entity.HasIndex(e => e.CategoryId);
+
+                entity.HasIndex(e => e.Date);
+
+                entity.HasIndex(e => e.ImportedTransactionHash);
+
+                entity.HasIndex(e => e.PayeeId);
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Amount).HasColumnType("numeric");
+
+                entity.HasOne(d => d.Account)
+                    .WithMany(p => p.Transactions)
+                    .HasForeignKey(d => d.AccountId);
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.Transactions)
+                    .HasForeignKey(d => d.CategoryId);
+
+                entity.HasOne(d => d.Payee)
+                    .WithMany(p => p.Transactions)
+                    .HasForeignKey(d => d.PayeeId);
+            });
+
+            OnModelCreatingPartial(modelBuilder);
+        }
+
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    
+    
         public void SeedData()
         {
             this.Database.EnsureCreated();
@@ -99,7 +198,7 @@ namespace dal
 
         private ImportRegex AddImportRegex(string regex, dto.ETransactionType transactionType = dto.ETransactionType.Unknown, string defaultCaption = null)
         {
-            var ir = new ImportRegex { RegexString = regex, TransactionType = transactionType, DefaultCaption = defaultCaption };
+            var ir = new ImportRegex { RegexString = regex, TransactionType = transactionType/*TODO, DefaultCaption = defaultCaption*/ };
             this.ImportRegexes.Add(ir);
 
             return ir;
@@ -107,27 +206,27 @@ namespace dal
 
         private void AddImportPayeeSelection(ImportRegex regex, string importedCaption, int payeeId, int categoryId)
         {
-            this.ImportPayeeSelections.Add(new ImportPayeeSelection { ImportRegexId = regex.ID, ImportedCaption = importedCaption, PayeeId = payeeId, CategoryId = categoryId });
+            this.ImportPayeeSelections.Add(new ImportPayeeSelection { ImportRegexId = regex.Id, ImportedCaption = importedCaption, PayeeId = payeeId, CategoryId = categoryId });
         }
 
         public Account GetAccount(int id)
         {
-            return this.Accounts.SingleOrDefault(a => a.ID == id);
+            return this.Accounts.SingleOrDefault(a => a.Id == id);
         }
 
         public Category GetCategory(int id)
         {
-            return this.Categories.SingleOrDefault(a => a.ID == id);
+            return this.Categories.SingleOrDefault(a => a.Id == id);
         }
 
         public Payee GetPayee(int id)
         {
-            return this.Payees.SingleOrDefault(a => a.ID == id);
+            return this.Payees.SingleOrDefault(a => a.Id == id);
         }
 
         public Transaction GetTransaction(int id)
         {
-            return this.Transactions.SingleOrDefault(a => a.ID == id);
+            return this.Transactions.SingleOrDefault(a => a.Id == id);
         }
         
         /// <summary>

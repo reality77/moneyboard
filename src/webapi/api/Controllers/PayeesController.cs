@@ -13,9 +13,9 @@ namespace api.Controllers
     [Produces("application/json")]
     public class PayeesController : MoneyboardController
     {
-        protected readonly dal_postgres.MoneyboardPostgresContext _db;
+        protected readonly dal.Model.MoneyboardContext _db;
 
-        public PayeesController(dal_postgres.MoneyboardPostgresContext db)
+        public PayeesController(dal.Model.MoneyboardContext db)
         {
             _db = db;
         }
@@ -47,7 +47,7 @@ namespace api.Controllers
             if(dbPayee != null)
                 return BadRequest("Payee name already exists");
 
-            dbPayee = new dal.models.Payee();
+            dbPayee = new dal.Model.Payee();
             dbPayee.Name = payeeName;
 
             _db.Payees.Add(dbPayee);
