@@ -17,7 +17,7 @@ namespace business
                 PageId = pageId,
             };
 
-            var account = db.GetAccount(accountId);
+            var account = db.GetAccount(accountId, includeTransactions: true);
 
             var trx = db.Transactions
                 .Include(t => t.Account)
@@ -35,11 +35,8 @@ namespace business
             return tview;
         }
 
-        public static CurrencyNumber GetBalanceAt(int accountId, DateTime date, int? beforeTransactionId, MoneyboardContext db)
+        public static CurrencyNumber GetBalanceAt(dal.Model.Account account, DateTime date, int? beforeTransactionId, MoneyboardContext db)
         {
-            var account = db.GetAccount(accountId);
-            //TODO : Assert account != null
-
             var trxOnDate = db.Transactions
                 .Where(t => t.Date.Date == date.Date)
                 .Select(t => t.Id);
@@ -81,7 +78,9 @@ namespace business
                 {
                     // on prend tous les transactions à compter de la date suivante de la première transaction de la liste
                     var firstTransaction = enumerator.Current;
-                    balance = GetBalanceAt(firstTransaction.AccountId, firstTransaction.Date, firstTransaction.Id, db);
+
+                    //TODO : régler pb de concurrences (nouvelle requete alors qu'il y a deja une requete en cours)
+                    balance = GetBalanceAt(firstTransaction.Account, firstTransaction.Date, firstTransaction.Id, db);
                 }
 
                 yield return new AccountTransactionRow 
