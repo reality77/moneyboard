@@ -114,7 +114,7 @@ namespace api.Controllers
         [HttpPost("uploadtoaccount")]
         public IActionResult UploadToAccount([FromBody] ImportedAccount importedAccount)
         {
-            var account = _db.GetAccount(importedAccount.ID);
+            var account = _db.GetAccount(importedAccount.ID, includeTransactions: true);
 
             if(account == null)
                 return NotFound();

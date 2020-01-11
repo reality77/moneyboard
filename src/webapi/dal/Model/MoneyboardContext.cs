@@ -186,7 +186,7 @@ namespace dal.Model
 
             // Recalcul de la balance 
             bool saveNecessary = false;
-            foreach (var account in this.Accounts)
+            foreach (var account in this.Accounts.Include(a => a.Transactions))
             {
                 if (RecomputeBalance(account))
                     saveNecessary = true;
@@ -209,9 +209,14 @@ namespace dal.Model
             this.ImportPayeeSelections.Add(new ImportPayeeSelection { ImportRegexId = regex.Id, ImportedCaption = importedCaption, PayeeId = payeeId, CategoryId = categoryId });
         }
 
-        public Account GetAccount(int id)
+        public Account GetAccount(int id, bool includeTransactions = false)
         {
-            return this.Accounts.SingleOrDefault(a => a.Id == id);
+            var query = this.Accounts.AsQueryable();
+
+            if(includeTransactions)
+                query = query.Include(a => a.Transactions);
+            
+            return query.SingleOrDefault(a => a.Id == id);
         }
 
         public Category GetCategory(int id)
@@ -236,7 +241,7 @@ namespace dal.Model
         /// <returns>true if the balance has been changed (changes must then be saved)</returns>
         public bool RecomputeBalance(Account account)
         {
-            this.Entry(account).Collection(a => a.Transactions).Load();
+            //this.Entry(account).Collection(a => a.Transactions).Load();
 
             var balance = account.InitialBalance + account.Transactions.Sum(a => a.Amount);
             if (account.Balance != balance)
