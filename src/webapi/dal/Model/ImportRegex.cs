@@ -1,28 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 using System.Text.RegularExpressions;
+using dto;
 
-namespace dal.models
+namespace dal.Model
 {
     public partial class ImportRegex
     {
         Regex _regex;
 
-        [Key]
-        public int ID { get; set; }
+        public ImportRegex()
+        {
+            ImportPayeeSelections = new HashSet<ImportPayeeSelection>();
+        }
 
-        [Required]
+        public int Id { get; set; }
         public string RegexString { get; set; }
+        public ETransactionType TransactionType { get; set; }
 
-        [Required]
-        public ICollection<ImportPayeeSelection> ImportPayeeSelections { get; set; }
-        
-        public dto.ETransactionType TransactionType { get; set; }
-
-        public string DefaultCaption { get; set; }
+        public virtual ICollection<ImportPayeeSelection> ImportPayeeSelections { get; set; }
 
         [NotMapped]
         public Regex Regex 

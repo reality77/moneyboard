@@ -1,3 +1,4 @@
+using dal.Model;
 using dto;
 
 namespace dal

@@ -5,17 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using dal;
-using dal.models;
+using dal.Model;
 
 namespace api.Controllers
 {
-    [Produces("application/json")]
+    [ApiController]
     [Route("accounts")]
+    [Produces("application/json")]
     public class AccountsController : MoneyboardController
     {
-        protected readonly dal_postgres.MoneyboardPostgresContext _db;
+        protected readonly dal.Model.MoneyboardContext _db;
 
-        public AccountsController(dal_postgres.MoneyboardPostgresContext db)
+        public AccountsController(dal.Model.MoneyboardContext db)
         {
             _db = db;
         }

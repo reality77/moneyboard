@@ -51,7 +51,7 @@ namespace business.import
 					{
 						case 'D':
 							data = data.Replace('\'', '/');
-							transaction.TransactionDate = DateTime.ParseExact(data, "dd/MM/yyyy", DateTimeFormatInfo.CurrentInfo, DateTimeStyles.None);
+							transaction.TransactionDate = DateTime.ParseExact(data, new string[] { "dd/MM/yy", "dd/MM/yyyy"}, DateTimeFormatInfo.CurrentInfo, DateTimeStyles.None);
 							break;
 						case 'T':
 							transaction.Amount = decimal.Parse(data, NumberFormatInfo.InvariantInfo);

@@ -1,10 +1,12 @@
-# Tests
+# moneyboard api
 
-### Tester accès get
+## Import 
 
-curl -G -v http://localhost:5000/transactions_view/account/1
+### Prepare import
+curl --insecure -X POST https://localhost:5001/import/prepare?accountId=4 -F file=@test.qif > liste_import.json
 
-### Tester import simple (avec fichier en tant que body)
+### Upload to account
 
-curl -X POST -F "files=@../data/sample.qif" http://localhost:5000/import/prepare
+Extraire un élément dans liste_import.json et créer un fichier import.json
 
+curl --insecure -X POST https://localhost:5001/import/uploadtoaccount -H "Content-Type:application/json;charset=utf-8" -d @import.json

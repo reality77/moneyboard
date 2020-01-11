@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using System.Text;
 using dto;
 
-namespace dal.models
+namespace dal.Model
 {
     public partial class Transaction : DalObject
     {
         public override IDtoObject LoadTo(IDtoObject dto, MoneyboardContext db)
         {
             var dtoObject = (dto.Transaction)dto;
-            dtoObject.ID = this.ID;
-            dtoObject.AccountId = this.Account.ID;
+            dtoObject.ID = this.Id;
+            dtoObject.AccountId = this.Account.Id;
             dtoObject.AccountName = this.Account.Name;
             dtoObject.Amount = new dto.CurrencyNumber { Currency = this.Account.Currency, Value = this.Amount };
             dtoObject.Caption = this.Caption;
@@ -20,13 +20,13 @@ namespace dal.models
 
             if (this.Category != null)
             {
-                dtoObject.CategoryId = this.Category.ID;
+                dtoObject.CategoryId = this.Category.Id;
                 dtoObject.CategoryName = this.Category.Name;
             }
 
             if (this.Payee != null)
             {
-                dtoObject.PayeeId = this.Payee.ID;
+                dtoObject.PayeeId = this.Payee.Id;
                 dtoObject.PayeeName = this.Payee.Name;
             }
             
@@ -43,7 +43,7 @@ namespace dal.models
         public override void UpdateFrom(IDtoObject dto, MoneyboardContext db)
         {
             var dtoObject = (dto.Transaction)dto;
-            this.ID = dtoObject.ID;
+            this.Id = dtoObject.ID;
             this.AccountId = dtoObject.AccountId;
 
             this.Caption = dtoObject.Caption;
